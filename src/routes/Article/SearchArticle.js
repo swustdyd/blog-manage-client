@@ -1,7 +1,7 @@
 import React from 'react';
 import {Form, Input, Select, Row, Col, List, Card, Icon, Popconfirm, Tag, Button } from 'antd';
 import { connect } from 'dva';
-import TagSelect from '../../components/TagSelect';
+import TagSelect2 from '../../components/TagSelect2';
 import Ellipsis from '../../components/Ellipsis';
 import StandardFormRow from '../../components/StandardFormRow';
 
@@ -35,18 +35,13 @@ export default class SearchArticle extends React.Component{
         const {form, dispatch} = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+            console.log(values);
             dispatch({
                 type: 'article/searchArticle',
                 payload: values,
             });
             }
         });
-    }
-
-    renderTags = (tags = []) => {
-        return tags.map((tag) => {
-            return <TagSelect.Option key={tag.id} value={tag.id}>{tag.name}</TagSelect.Option>
-        })
     }
 
     renderLoadMore = () => {
@@ -91,9 +86,9 @@ export default class SearchArticle extends React.Component{
     }
 
     render(){
-        const {article, tag, searching, form} = this.props;
+        const {article, tag: {list: tags}, searching, form} = this.props;
         const { getFieldDecorator, resetFields } = form;
-        const tags = this.renderTags(tag.list); 
+        // const tags = this.renderTags(tag.list); 
         const loadMore = this.renderLoadMore();
         const formItemLayout = {
             labelCol: {
@@ -126,13 +121,12 @@ export default class SearchArticle extends React.Component{
                             )}
                         </FormItem>
                     </StandardFormRow>
-                    <StandardFormRow title="所属标签">
+                    <StandardFormRow title="所属标签" block>
                         <FormItem>
                             {getFieldDecorator('searchTags')(
-                                <TagSelect expandable>
-                                    {tags}
-                                </TagSelect>
+                                <TagSelect2 tags={tags} expandable />
                             )}
+                            {/* <TagSelect2 tags={tags} expandable onChange={(values) => console.log(values)} /> */}
                         </FormItem>
                     </StandardFormRow>
                     <StandardFormRow title="其他选项">
