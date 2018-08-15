@@ -114,7 +114,7 @@ export default class SearchArticle extends React.Component{
         return(
             <div>
                 <Form className={styles.searchForm} onSubmit={this.handleSearch}>
-                    <StandardFormRow title="关键词">
+                    <StandardFormRow title={<span>&emsp;关键词</span>}>
                         <FormItem>
                             {getFieldDecorator('searchKeyWord')(
                                 <Input placeholder="输入搜索的关键词..." />
