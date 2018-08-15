@@ -13,29 +13,52 @@ const FormItem = Form.Item;
 @Form.create()
 export default class TagList extends React.Component{
 
+    constructor(props){
+        super(props);
+        this.state = {
+            currentIndex: 0,
+            pageSize: 10,
+        }
+    }
+
     componentDidMount(){
         const {dispatch} = this.props;
+        const {pageSize} = this.state;
         dispatch({
             type: 'tag/searchTags',
-            payload: {},
+            payload: {
+                offset: 0,
+                pageSize,
+            },
         });
     }
 
-    handleSearch(e){
-        e.preventDefault();
+    handleSearch(e, options){
+        if(e){
+            e.preventDefault();
+        }
+        this.setState({
+            currentIndex: options.pageIndex,
+        })
         const {form, dispatch} = this.props;
+        const {pageSize} = this.state;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 dispatch({
                     type: 'tag/searchTags',
-                    payload: values,
+                    payload: {
+                        offset: options.pageIndex * pageSize,
+                        pageSize,
+                        condition: values,
+                    },
                 });
             }
         });
     }
 
     render(){
-        const {form: {getFieldDecorator}, tag: {list: data}, searching} = this.props;
+        const {form: {getFieldDecorator}, tag: {list: data, total}, searching} = this.props;
+        const {currentIndex, pageSize} = this.state;
         const formItemLayout = {
             labelCol: {
                 xs: { span: 4 },
@@ -86,6 +109,15 @@ export default class TagList extends React.Component{
                 ),
             },
         ]
+
+        const pagination = {
+            total,
+            current: currentIndex + 1,
+            pageSize,
+            onChange: (pageIndex) => {
+                this.handleSearch(null, {pageIndex: pageIndex - 1})
+            },
+        };
         return(
             <div>
                 <Form className={styles.formContainer} onSubmit={(e) => this.handleSearch(e)}>
@@ -118,6 +150,7 @@ export default class TagList extends React.Component{
                     className={styles.tableContainer}
                     columns={columns} 
                     dataSource={data}
+                    pagination={pagination}
                     expandedRowRender={record => <p key={record.id} className={styles.desc}>{record.description}</p>} 
                 />
             </div>

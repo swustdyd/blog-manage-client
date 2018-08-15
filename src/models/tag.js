@@ -9,8 +9,8 @@ export default {
   },
 
   effects: {
-    *searchTags(options, { call, put }) {
-      const response = yield call(searchTags);
+    *searchTags({payload}, { call, put }) {
+      const response = yield call(searchTags, payload);
       yield put({
         type: 'saveList',
         payload: {

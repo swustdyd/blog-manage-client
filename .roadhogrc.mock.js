@@ -145,11 +145,14 @@ const proxy = {
     })
   },
   'GET /api/searchTags': (req, res) => {
+    let {pageSize, offset} = req.query;
+    offset = parseInt(offset)
+    pageSize = parseInt(pageSize)
     res.send({
       ok: true,
       result: {
-        total: 3,
-        list: getTags
+        total: getTags.length,
+        list: getTags.slice(offset, offset + pageSize)
       }
     })
   }
