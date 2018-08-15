@@ -35,7 +35,6 @@ export default class SearchArticle extends React.Component{
         const {form, dispatch} = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-            console.log(values);
             dispatch({
                 type: 'article/searchArticle',
                 payload: values,
