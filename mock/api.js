@@ -306,7 +306,11 @@ const tagTemplate = {
   color: '#333',
 }
 
-const tagColors = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
+const tagColors = ["#CC9999", "#666699", "#FF9900", "#0099CC", 
+  "#CCCC99", "#CC3399", "#99CC00", "#FF6666", "#3399CC", "#CC6600", "#999999", 
+  "#CCCC33", "#FF9933", "#009933", "#0099CC", "#CCCCCC", "#FF6666", "#FF6600", 
+  "#009966", "#CC6633", "#FFCC99", "#CC6600", "#CC0066", "#009999", "#FFCC33",
+];
 
 export const getTags = renderTemplate(tagColors.length, tagTemplate, (template, index) => {
   const id = index + 1;
