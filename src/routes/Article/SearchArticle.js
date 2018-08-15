@@ -14,6 +14,7 @@ const { Option } = Select;
     article,
     tag,
     searching: loading.effects['article/searchArticle'],
+    moreLoading: loading.effects['article/loadMorArticle'],
 }))
 @Form.create()
 export default class SearchArticle extends React.Component{
@@ -30,26 +31,33 @@ export default class SearchArticle extends React.Component{
         })
     }
 
-    handleSearch = (e) => {
+    handleSearch = (e, isLoadMore) => {
         e.preventDefault();
         const {form, dispatch} = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-            dispatch({
-                type: 'article/searchArticle',
-                payload: values,
-            });
+                if(isLoadMore){
+                    dispatch({
+                        type: 'article/loadMorArticle',
+                        payload: values,
+                    });
+                }else{
+                    dispatch({
+                        type: 'article/searchArticle',
+                        payload: values,
+                    });
+                }
             }
         });
     }
 
     renderLoadMore = () => {
-        const {article: {hasMore}, searching} = this.props;
+        const {article: {hasMore}, moreLoading} = this.props;
         return (
             <div className={styles.loadMoreContainer}>
                 {hasMore ? (
-                    <Button onClick={this.handleSearch}>
-                        {searching ? (
+                    <Button onClick={(e) => this.handleSearch(e, true)}>
+                        {moreLoading ? (
                             <span>
                                 <Icon type="loading" />&emsp;加载中...
                             </span>
@@ -85,9 +93,8 @@ export default class SearchArticle extends React.Component{
     }
 
     render(){
-        const {article, tag: {list: tags}, searching, form} = this.props;
-        const { getFieldDecorator, resetFields } = form;
-        // const tags = this.renderTags(tag.list); 
+        const {article: {list}, tag: {list: tags}, searching, form: {getFieldDecorator, resetFields}} = this.props;
+
         const loadMore = this.renderLoadMore();
         const formItemLayout = {
             labelCol: {
@@ -182,10 +189,10 @@ export default class SearchArticle extends React.Component{
                         md: 3,
                     }}
                     className={styles.listContainer}
-                    loading={article.list.length === 0 ? searching : false}
+                    loading={searching}
                     itemLayout="vertical"
                     loadMore={loadMore}
-                    dataSource={article.list}
+                    dataSource={list}
                     renderItem={(item) => (
                         <List.Item key={item.id}>
                             <Card

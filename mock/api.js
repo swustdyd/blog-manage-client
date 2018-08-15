@@ -300,7 +300,7 @@ function renderTemplate(num, template, callback){
 const tagTemplate = {
   id: 1, 
   name: 'tag1', 
-  describtion: 'test tag describtion', 
+  description: 'test tag describtion', 
   createAt: '2018-10-25 12:56:30', 
   updateAt: '2018-10-25 12:56:30',
   color: '#333',
@@ -314,7 +314,7 @@ const tagColors = ["#CC9999", "#666699", "#FF9900", "#0099CC",
 
 export const getTags = renderTemplate(tagColors.length, tagTemplate, (template, index) => {
   const id = index + 1;
-  return {...template, id, name: `标签${id}`, describtion: `标签${id}描述`, color: tagColors[index]};
+  return {...template, id, name: `标签${id}`, description: `标签${id}描述`, color: tagColors[index]};
 });
 
 const articleTemplate = {

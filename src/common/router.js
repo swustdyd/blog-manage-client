@@ -94,6 +94,9 @@ export const getRouterData = app => {
     '/article/demo': {
       component: dynamicWrapper(app, ['list'], () => import('../routes/List/Articles')),
     },
+    '/article/tag': {
+      component: dynamicWrapper(app, ['tag'], () => import('../routes/Tag/TagList')),
+    },
     '/form/basic-form': {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
     },
