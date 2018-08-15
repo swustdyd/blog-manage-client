@@ -1,0 +1,38 @@
+.container{
+    position: relative;
+    .tagContainer{
+        margin-right: 50px;
+        overflow: hidden;
+        height: 30px;
+        padding-bottom: 5px;
+    }
+    .tagContainerExpand{
+        height: auto;
+    }
+    .expandContainer{
+        position: absolute;
+        right: 0;
+        top: 0;
+        span{
+            color: #1890ff;
+            cursor: pointer;
+        }
+    }
+    .tag{
+        display: inline-block;
+        background-color: #fff;
+        border: none;
+        margin: 0 5px;
+        height: 25px;
+        line-height: 25px;
+        padding: 0 5px;
+        border-radius: 4px;
+    }
+    .tag:hover{
+        cursor: pointer;
+    }
+    .tagSelected{
+        color: #fff;
+        background-color: #1890ff;
+    }
+}
