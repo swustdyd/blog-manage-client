@@ -1,4 +1,4 @@
-import { searchTags } from '../services/api';
+import { searchTags, saveOrUpdateTag } from '../services/api';
 
 export default {
   namespace: 'tag',
@@ -6,10 +6,11 @@ export default {
   state: {
     list: [],
     total: 0,
+    showModal: false,
   },
 
   effects: {
-    *searchTags({payload}, { call, put }) {
+    *searchTags({payload}, { call, put}) {
       const response = yield call(searchTags, payload);
       yield put({
         type: 'saveList',
@@ -19,6 +20,25 @@ export default {
         },
       });
     },
+    *saveOrUpdateTag({payload, resolve, reject}, { call, put }) {
+      try {        
+        const response = yield call(saveOrUpdateTag, payload);
+        if(response.ok){
+          if(resolve){
+            resolve(response);
+          }
+          yield put({
+            type: 'hideModal',
+          });
+        }else if(reject){
+          reject(response);
+        }        
+      } catch (e) {
+        if(reject){
+          reject(e);
+        }
+      }
+    },
   },
 
   reducers: {
@@ -27,6 +47,18 @@ export default {
         ...state,
         list: action.payload.list,
         total: action.payload.total,
+      };
+    },
+    showModal(state){
+      return {
+        ...state,
+        showModal: true,
+      };
+    },
+    hideModal(state){
+      return {
+        ...state,
+        showModal: false,
       };
     },
   },

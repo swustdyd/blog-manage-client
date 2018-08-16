@@ -85,3 +85,10 @@ export async function searchArticle(options){
 export async function searchTags(options){
   return request(`/api/searchTags?${stringify(options)}`);
 }
+
+export async function saveOrUpdateTag(params){
+  return request('/api/saveOrUpdateTag', {
+    method: 'POST',
+    body: params,
+  });
+}

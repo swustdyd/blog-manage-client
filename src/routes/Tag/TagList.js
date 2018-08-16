@@ -1,6 +1,8 @@
 import React from 'react';
-import {Form, Input, Row, Col, Table, Icon, Popconfirm, Tag, Button } from 'antd';
+import {Form, Input, Row, Col, Table, Icon, Popconfirm, Tag, Button, Modal } from 'antd';
 import { connect } from 'dva';
+
+import Edit from './Edit'
 
 import styles from './TagList.less'
 
@@ -18,6 +20,8 @@ export default class TagList extends React.Component{
         this.state = {
             currentIndex: 0,
             pageSize: 10,
+            modalSetting: {},
+            modalContent: {},
         }
     }
 
@@ -33,12 +37,12 @@ export default class TagList extends React.Component{
         });
     }
 
-    handleSearch(e, options){
+    handleSearch(e, options = {}){
         if(e){
             e.preventDefault();
         }
         this.setState({
-            currentIndex: options.pageIndex,
+            currentIndex: options.pageIndex || 0,
         })
         const {form, dispatch} = this.props;
         const {pageSize} = this.state;
@@ -56,9 +60,22 @@ export default class TagList extends React.Component{
         });
     }
 
+    showNewTagModal(){
+        this.setState({
+            modalSetting: {
+                title: '新增标签',
+            },
+            modalContent: <Edit />,
+        })
+        const {dispatch} = this.props;
+        dispatch({
+             type: 'tag/showModal',
+        })
+    }
+
     render(){
-        const {form: {getFieldDecorator}, tag: {list: data, total}, searching} = this.props;
-        const {currentIndex, pageSize} = this.state;
+        const {form: {getFieldDecorator}, tag: {list: data, total, showModal}, searching, dispatch} = this.props;
+        const {currentIndex, pageSize, modalSetting, modalContent} = this.state;
         const formItemLayout = {
             labelCol: {
                 xs: { span: 4 },
@@ -84,6 +101,23 @@ export default class TagList extends React.Component{
             {
                 title: '标签名',
                 dataIndex: 'name',
+                render: (name, record) => (
+                    <a 
+                        onClick={() => {
+                            this.setState({
+                                modalSetting: {
+                                    title: `编辑标签：${name}`,
+                                },
+                                modalContent: <Edit defaultTag={record} />,
+                            })
+                            dispatch({
+                                type: 'tag/showModal',
+                           })
+                        }}
+                    >
+                        {name}
+                    </a>
+                ),
             },
             {
                 title: '样式',
@@ -93,7 +127,7 @@ export default class TagList extends React.Component{
             {
                 title: '创建人',
                 dataIndex: 'creater',
-                render: (creater) => <a>{creater || 'unknown'}</a>,
+                render: (creater) => <span>{creater || 'unknown'}</span>,
             },
             {
                 title: '最后更新时间',
@@ -143,6 +177,9 @@ export default class TagList extends React.Component{
                             </FormItem>
                         </Col>
                     </Row>
+                    <Button type="primary" onClick={() => this.showNewTagModal()}>
+                        新增标签
+                    </Button>
                 </Form>
                 <Table
                     rowKey="id"
@@ -153,6 +190,20 @@ export default class TagList extends React.Component{
                     pagination={pagination}
                     expandedRowRender={record => <p key={record.id} className={styles.desc}>{record.description}</p>} 
                 />
+                <Modal
+                    destroyOnClose
+                    visible={showModal}
+                    maskClosable={false}
+                    footer={null}
+                    {...modalSetting}
+                    onCancel={() => {
+                        dispatch({
+                            type: 'tag/hideModal',
+                        })
+                    }}
+                >
+                    {modalContent}
+                </Modal>
             </div>
         )
     }

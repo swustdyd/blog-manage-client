@@ -27,7 +27,10 @@ export default class SearchArticle extends React.Component{
         })
         dispatch({
             type: 'tag/searchTags',
-            payload: {},
+            payload: {
+                offset: 0,
+                pageSize: 30,
+            },
         })
     }
 
@@ -94,7 +97,6 @@ export default class SearchArticle extends React.Component{
 
     render(){
         const {article: {list}, tag: {list: tags}, searching, form: {getFieldDecorator, resetFields}} = this.props;
-
         const loadMore = this.renderLoadMore();
         const formItemLayout = {
             labelCol: {
@@ -132,7 +134,6 @@ export default class SearchArticle extends React.Component{
                             {getFieldDecorator('searchTags')(
                                 <TagSelect2 tags={tags} expandable />
                             )}
-                            {/* <TagSelect2 tags={tags} expandable onChange={(values) => console.log(values)} /> */}
                         </FormItem>
                     </StandardFormRow>
                     <StandardFormRow title="其他选项">

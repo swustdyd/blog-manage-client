@@ -39,24 +39,20 @@ const menuData = [
         name: '标签设置',
         path: 'tag',
       },
-      {
-        name: '表单Demo',
-        path: 'demo',
-      },
     ],
   },
   {
     name: '系统设置',
     icon: 'setting',
-    path: 'list',
+    path: 'system',
     children: [
       {
         name: '角色设置',
-        path: 'table-list',
+        path: 'role',
       },
       {
         name: '用户列表',
-        path: 'basic-list',
+        path: 'user-list',
       },
     ],
   },

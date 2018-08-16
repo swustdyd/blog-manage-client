@@ -147,12 +147,29 @@ const proxy = {
   'GET /api/searchTags': (req, res) => {
     let {pageSize, offset} = req.query;
     offset = parseInt(offset)
-    pageSize = parseInt(pageSize)
+    pageSize = parseInt(pageSize);
+    let list = [];
+    if(pageSize >= getTags.length){
+      list = getTags;
+    }else{
+      list = getTags.slice(offset, offset + pageSize);
+    }
     res.send({
       ok: true,
       result: {
         total: getTags.length,
-        list: getTags.slice(offset, offset + pageSize)
+        list,
+      }
+    })
+  },
+  'POST /api/saveOrUpdateTag': (req, res) => {
+    const {tag} = req.body;
+    res.send({
+      ok: tag ? true : false,
+      message: tag ? '保存成功' : '保存失败',
+      result: {
+        ...tag,
+        id: 1
       }
     })
   }

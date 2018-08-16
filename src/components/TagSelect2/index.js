@@ -18,14 +18,12 @@ export default class TagSelect2 extends React.Component{
     }
 
     componentWillReceiveProps(newProps){
-        const {tags} = this.state;
-        if(tags.length === 0){
-            this.setState({
-                tags: newProps.tags.map((tag) => {
-                    return {...tag, selected: false}
-                }),
-            })
-        }
+        const {tags} = newProps;
+        this.setState({
+            tags: tags.map((tag) => {
+                return {...tag, selected: false}
+            }),
+        })
         return newProps;
     }
 
