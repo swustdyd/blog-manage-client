@@ -172,7 +172,84 @@ const proxy = {
         id: 1
       }
     })
-  }
+  }, 
+  'GET /api/searchRoles': (req, res) => {
+    const {offset, pageSize} = req.query;
+    res.send({
+      ok: true,
+      result: [
+        {
+          id: 1,
+          name: '普通用户',
+          createAt: '2018-08-20 09:18:00',
+          updateAt: '2018-08-20 09:18:00'
+        },
+        {
+          id: 2,
+          name: '管理员',
+          createAt: '2018-08-20 09:18:00',
+          updateAt: '2018-08-20 09:18:00'
+        },
+        {
+          id: 3,
+          name: '超级管理员',
+          createAt: '2018-08-20 09:18:00',
+          updateAt: '2018-08-20 09:18:00'
+        }
+      ]
+    })
+  },
+  'POST /api/saveOrUpdateRole': (req, res) => {
+    const {role} = req.body;
+    res.send({
+      ok: role ? true : false,
+      message: role ? '保存成功' : '保存失败',
+      result: {
+        ...role,
+        id: 1
+      }
+    })
+  }, 
+  'GET /api/searchUsers': (req, res) => {
+    const {offset, pageSize} = req.query;
+    res.send({
+      ok: true,
+      result: [
+        {
+          id: 1,
+          name: '普通用户',
+          typeName: 'normal',
+          createAt: '2018-08-20 09:18:00',
+          updateAt: '2018-08-20 09:18:00'
+        },
+        {
+          id: 2,
+          name: '管理员',
+          typeName: 'admin',
+          createAt: '2018-08-20 09:18:00',
+          updateAt: '2018-08-20 09:18:00'
+        },
+        {
+          id: 3,
+          name: '超级管理员',
+          typeName: 'superAdmin',
+          createAt: '2018-08-20 09:18:00',
+          updateAt: '2018-08-20 09:18:00'
+        }
+      ]
+    })
+  },
+  'POST /api/saveOrUpdateUser': (req, res) => {
+    const {user} = req.body;
+    res.send({
+      ok: user ? true : false,
+      message: user ? '保存成功' : '保存失败',
+      result: {
+        ...user,
+        id: 1
+      }
+    })
+  }, 
 };
 
 export default (noProxy ? {} : delay(proxy, 1000));
