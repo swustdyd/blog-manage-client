@@ -1,6 +1,6 @@
 import { isUrl } from '../utils/utils';
 
-const menuData = [
+export const menuData = [
   {
     name: '文章管理',
     icon: 'file-text',
@@ -48,7 +48,9 @@ const menuData = [
   },
 ];
 
-function formatter(data, parentPath = '/', parentAuthority) {
+
+
+export function formatter(data, parentPath = '/', parentAuthority) {
   return data.map(item => {
     let { path } = item;
     if (!isUrl(path)) {
