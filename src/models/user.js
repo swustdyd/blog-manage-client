@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent } from '../services/user';
+import { query as queryUsers, queryCurrent, searchUsers, saveOrUpdateUser } from '../services/user';
 
 export default {
   namespace: 'user',
@@ -6,13 +6,14 @@ export default {
   state: {
     list: [],
     currentUser: {},
+    showModal: false,
   },
 
   effects: {
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
       yield put({
-        type: 'save',
+        type: 'saveList',
         payload: response,
       });
     },
@@ -23,10 +24,30 @@ export default {
         payload: response,
       });
     },
+    *searchUsers({payload}, {call, put}){
+      const response = yield call(searchUsers, payload);
+      yield put({
+        type: 'saveList',
+        payload: response.result.list,
+      });
+    },
+    *saveOrUpdateUser({payload, resolve, reject}, {call, put}){
+      const response = yield call(saveOrUpdateUser, payload);
+      if(response.ok){
+        if(resolve){
+          resolve(response);
+        }
+        yield put({
+          type: 'hideModal',
+        })
+      }else if(reject){
+        reject(resolve);
+      }
+    },
   },
 
   reducers: {
-    save(state, action) {
+    saveList(state, action) {
       return {
         ...state,
         list: action.payload,
@@ -46,6 +67,18 @@ export default {
           notifyCount: action.payload,
         },
       };
+    },
+    hideModal(state){
+      return {
+        ...state,
+        showModal: false,
+      }
+    },
+    showModal(state){    
+      return {
+        ...state,
+        showModal: true,
+      }
     },
   },
 };

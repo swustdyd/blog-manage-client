@@ -177,26 +177,31 @@ const proxy = {
     const {offset, pageSize} = req.query;
     res.send({
       ok: true,
-      result: [
-        {
-          id: 1,
-          name: '普通用户',
-          createAt: '2018-08-20 09:18:00',
-          updateAt: '2018-08-20 09:18:00'
-        },
-        {
-          id: 2,
-          name: '管理员',
-          createAt: '2018-08-20 09:18:00',
-          updateAt: '2018-08-20 09:18:00'
-        },
-        {
-          id: 3,
-          name: '超级管理员',
-          createAt: '2018-08-20 09:18:00',
-          updateAt: '2018-08-20 09:18:00'
-        }
-      ]
+      result: {
+        list: [
+          {
+            id: 1,
+            name: '普通用户',
+            typeName: 'normal',
+            createAt: '2018-08-20 09:18:00',
+            updateAt: '2018-08-20 09:18:00'
+          },
+          {
+            id: 2,
+            name: '管理员',
+            typeName: 'admin',
+            createAt: '2018-08-20 09:18:00',
+            updateAt: '2018-08-20 09:18:00'
+          },
+          {
+            id: 3,
+            name: '超级管理员',
+            typeName: 'superAdmin',
+            createAt: '2018-08-20 09:18:00',
+            updateAt: '2018-08-20 09:18:00'
+          }
+        ]
+      }
     })
   },
   'POST /api/saveOrUpdateRole': (req, res) => {
@@ -214,29 +219,34 @@ const proxy = {
     const {offset, pageSize} = req.query;
     res.send({
       ok: true,
-      result: [
-        {
-          id: 1,
-          name: '普通用户',
-          typeName: 'normal',
-          createAt: '2018-08-20 09:18:00',
-          updateAt: '2018-08-20 09:18:00'
-        },
-        {
-          id: 2,
-          name: '管理员',
-          typeName: 'admin',
-          createAt: '2018-08-20 09:18:00',
-          updateAt: '2018-08-20 09:18:00'
-        },
-        {
-          id: 3,
-          name: '超级管理员',
-          typeName: 'superAdmin',
-          createAt: '2018-08-20 09:18:00',
-          updateAt: '2018-08-20 09:18:00'
-        }
-      ]
+      result: {
+        list: [
+          {
+            id: 1,
+            name: '用户1',
+            role: 1,
+            roleName: '普通用户',
+            createAt: '2018-08-20 09:18:00',
+            updateAt: '2018-08-20 09:18:00'
+          },
+          {
+            id: 2,
+            name: '用户2',
+            role: 2,
+            roleName: '管理员',
+            createAt: '2018-08-20 09:18:00',
+            updateAt: '2018-08-20 09:18:00'
+          },
+          {
+            id: 3,
+            name: '用户3',
+            role: 3,
+            roleName: '超级管理员',
+            createAt: '2018-08-20 09:18:00',
+            updateAt: '2018-08-20 09:18:00'
+          }
+        ]
+      }
     })
   },
   'POST /api/saveOrUpdateUser': (req, res) => {
@@ -252,4 +262,4 @@ const proxy = {
   }, 
 };
 
-export default (noProxy ? {} : delay(proxy, 1000));
+export default (noProxy ? {} : delay(proxy, 10));

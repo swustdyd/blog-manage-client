@@ -92,3 +92,14 @@ export async function saveOrUpdateTag(params){
     body: params,
   });
 }
+
+export async function searchRoles(params){
+  return request(`/api/searchRoles?${stringify(params)}`);
+}
+
+export async function saveOrUpdateRole(params){
+  return request('/api/saveOrUpdateRole', {
+    method: 'POST',
+    body: params,
+  });
+}
