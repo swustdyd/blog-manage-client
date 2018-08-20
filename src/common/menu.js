@@ -1,4 +1,5 @@
 import { isUrl } from '../utils/utils';
+import { getMenus } from '../services/api';
 
 export const menuData = [
   {
@@ -48,8 +49,6 @@ export const menuData = [
   },
 ];
 
-
-
 export function formatter(data, parentPath = '/', parentAuthority) {
   return data.map(item => {
     let { path } = item;
@@ -68,4 +67,7 @@ export function formatter(data, parentPath = '/', parentAuthority) {
   });
 }
 
-export const getMenuData = () => formatter(menuData);
+export async function getMenuData() {
+  const { result } = await getMenus();
+  return formatter(result);
+}

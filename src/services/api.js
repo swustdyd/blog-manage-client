@@ -78,28 +78,32 @@ export async function queryNotices() {
   return request('/api/notices');
 }
 
-export async function searchArticle(options){
+export async function searchArticle(options) {
   return request(`/api/searchArticle?${stringify(options)}`);
 }
 
-export async function searchTags(options){
+export async function searchTags(options) {
   return request(`/api/searchTags?${stringify(options)}`);
 }
 
-export async function saveOrUpdateTag(params){
+export async function saveOrUpdateTag(params) {
   return request('/api/saveOrUpdateTag', {
     method: 'POST',
     body: params,
   });
 }
 
-export async function searchRoles(params){
+export async function searchRoles(params) {
   return request(`/api/searchRoles?${stringify(params)}`);
 }
 
-export async function saveOrUpdateRole(params){
+export async function saveOrUpdateRole(params) {
   return request('/api/saveOrUpdateRole', {
     method: 'POST',
     body: params,
   });
+}
+
+export async function getMenus() {
+  return request('/api/menus');
 }

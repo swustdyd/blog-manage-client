@@ -140,18 +140,18 @@ const proxy = {
       ok: true,
       result: {
         total: 305,
-        list: getArticles
-      }
-    })
+        list: getArticles,
+      },
+    });
   },
   'GET /api/searchTags': (req, res) => {
-    let {pageSize, offset} = req.query;
-    offset = parseInt(offset)
+    let { pageSize, offset } = req.query;
+    offset = parseInt(offset);
     pageSize = parseInt(pageSize);
     let list = [];
-    if(pageSize >= getTags.length){
+    if (pageSize >= getTags.length) {
       list = getTags;
-    }else{
+    } else {
       list = getTags.slice(offset, offset + pageSize);
     }
     res.send({
@@ -159,22 +159,22 @@ const proxy = {
       result: {
         total: getTags.length,
         list,
-      }
-    })
+      },
+    });
   },
   'POST /api/saveOrUpdateTag': (req, res) => {
-    const {tag} = req.body;
+    const { tag } = req.body;
     res.send({
       ok: tag ? true : false,
       message: tag ? '保存成功' : '保存失败',
       result: {
         ...tag,
-        id: 1
-      }
-    })
-  }, 
+        id: 1,
+      },
+    });
+  },
   'GET /api/searchRoles': (req, res) => {
-    const {offset, pageSize} = req.query;
+    const { offset, pageSize } = req.query;
     res.send({
       ok: true,
       result: {
@@ -184,39 +184,39 @@ const proxy = {
             name: '普通用户',
             typeName: 'normal',
             createAt: '2018-08-20 09:18:00',
-            updateAt: '2018-08-20 09:18:00'
+            updateAt: '2018-08-20 09:18:00',
           },
           {
             id: 2,
             name: '管理员',
             typeName: 'admin',
             createAt: '2018-08-20 09:18:00',
-            updateAt: '2018-08-20 09:18:00'
+            updateAt: '2018-08-20 09:18:00',
           },
           {
             id: 3,
             name: '超级管理员',
             typeName: 'superAdmin',
             createAt: '2018-08-20 09:18:00',
-            updateAt: '2018-08-20 09:18:00'
-          }
-        ]
-      }
-    })
+            updateAt: '2018-08-20 09:18:00',
+          },
+        ],
+      },
+    });
   },
   'POST /api/saveOrUpdateRole': (req, res) => {
-    const {role} = req.body;
+    const { role } = req.body;
     res.send({
       ok: role ? true : false,
       message: role ? '保存成功' : '保存失败',
       result: {
         ...role,
-        id: 1
-      }
-    })
-  }, 
+        id: 1,
+      },
+    });
+  },
   'GET /api/searchUsers': (req, res) => {
-    const {offset, pageSize} = req.query;
+    const { offset, pageSize } = req.query;
     res.send({
       ok: true,
       result: {
@@ -227,7 +227,7 @@ const proxy = {
             role: 1,
             roleName: '普通用户',
             createAt: '2018-08-20 09:18:00',
-            updateAt: '2018-08-20 09:18:00'
+            updateAt: '2018-08-20 09:18:00',
           },
           {
             id: 2,
@@ -235,7 +235,7 @@ const proxy = {
             role: 2,
             roleName: '管理员',
             createAt: '2018-08-20 09:18:00',
-            updateAt: '2018-08-20 09:18:00'
+            updateAt: '2018-08-20 09:18:00',
           },
           {
             id: 3,
@@ -243,23 +243,48 @@ const proxy = {
             role: 3,
             roleName: '超级管理员',
             createAt: '2018-08-20 09:18:00',
-            updateAt: '2018-08-20 09:18:00'
-          }
-        ]
-      }
-    })
+            updateAt: '2018-08-20 09:18:00',
+          },
+        ],
+      },
+    });
   },
   'POST /api/saveOrUpdateUser': (req, res) => {
-    const {user} = req.body;
+    const { user } = req.body;
     res.send({
       ok: user ? true : false,
       message: user ? '保存成功' : '保存失败',
       result: {
         ...user,
-        id: 1
-      }
-    })
-  }, 
+        id: 1,
+      },
+    });
+  },
+  'GET /api/menus': (req, res) => {
+    res.send({
+      ok: true,
+      result: [
+        {
+          name: '文章管理',
+          path: 'article',
+          icon: 'file-text',
+          children: [{ name: '文章列表', path: 'list' }, { name: '标签设置', path: 'tag' }],
+        },
+        {
+          name: '系统设置',
+          path: 'system',
+          icon: 'setting',
+          children: [{ name: '角色设置', path: 'role' }, { name: '用户列表', path: 'user-list' }],
+        },
+        {
+          name: '我的',
+          path: 'user',
+          icon: 'user',
+          children: [{ name: '个人中心', path: 'detail' }],
+        },
+      ],
+    });
+  },
 };
 
 export default (noProxy ? {} : delay(proxy, 10));

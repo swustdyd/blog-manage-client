@@ -37,7 +37,7 @@ const getRedirect = item => {
     }
   }
 };
-getMenuData().forEach(getRedirect);
+// getMenuData().forEach(getRedirect);
 
 /**
  * 获取面包屑映射
@@ -102,13 +102,16 @@ export default class BasicLayout extends React.PureComponent {
 
   state = {
     isMobile,
+    menuData: [],
+    routerData: '',
   };
 
   getChildContext() {
-    const { location, routerData } = this.props;
+    const { location } = this.props;
+    const { menuData, routerData } = this.state;
     return {
       location,
-      breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(), routerData),
+      breadcrumbNameMap: getBreadcrumbNameMap(menuData, routerData),
     };
   }
 
@@ -118,9 +121,21 @@ export default class BasicLayout extends React.PureComponent {
         isMobile: mobile,
       });
     });
-    const { dispatch } = this.props;
+    const { dispatch, routerData } = this.props;
     dispatch({
       type: 'user/fetchCurrent',
+    });
+
+    getMenuData().then(data => {
+      data.forEach(getRedirect);
+      this.setState({
+        menuData: data,
+      });
+    });
+    routerData.then(data => {
+      this.setState({
+        routerData: data,
+      });
     });
   }
 
@@ -129,7 +144,8 @@ export default class BasicLayout extends React.PureComponent {
   }
 
   getPageTitle() {
-    const { routerData, location } = this.props;
+    const { location } = this.props;
+    const { routerData } = this.state;
     const { pathname } = location;
     let title = 'Blog Manage';
     let currRouterData = null;
@@ -156,7 +172,7 @@ export default class BasicLayout extends React.PureComponent {
       urlParams.searchParams.delete('redirect');
       window.history.replaceState(null, 'redirect', urlParams.href);
     } else {
-      const { routerData } = this.props;
+      const { routerData } = this.state;
       // get the first authorized route path in routerData
       const authorizedPath = Object.keys(routerData).find(
         item => check(routerData[item].authority, item) && item !== '/'
@@ -211,12 +227,12 @@ export default class BasicLayout extends React.PureComponent {
       collapsed,
       fetchingNotices,
       notices,
-      routerData,
+      // routerData,
       match,
       location,
     } = this.props;
-    const { isMobile: mb } = this.state;
-    const baseRedirect = this.getBaseRedirect();
+    const { isMobile: mb, menuData, routerData } = this.state;
+    const baseRedirect = routerData && this.getBaseRedirect();
     const layout = (
       <Layout>
         <SiderMenu
@@ -226,7 +242,7 @@ export default class BasicLayout extends React.PureComponent {
           // you will be forced to jump to the 403 interface without permission
           title="Blog Manage"
           Authorized={Authorized}
-          menuData={getMenuData()}
+          menuData={menuData}
           collapsed={collapsed}
           location={location}
           isMobile={mb}
@@ -300,11 +316,17 @@ export default class BasicLayout extends React.PureComponent {
     );
 
     return (
-      <DocumentTitle title={this.getPageTitle()}>
-        <ContainerQuery query={query}>
-          {params => <div className={classNames(params)}>{layout}</div>}
-        </ContainerQuery>
-      </DocumentTitle>
+      <div>
+        {routerData && menuData && menuData.length > 0 ? (
+          <DocumentTitle title={this.getPageTitle()}>
+            <ContainerQuery query={query}>
+              {params => <div className={classNames(params)}>{layout}</div>}
+            </ContainerQuery>
+          </DocumentTitle>
+        ) : (
+          '加载中...'
+        )}
+      </div>
     );
   }
 }

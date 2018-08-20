@@ -35,6 +35,7 @@ const dynamicWrapper = (app, models, component) => {
       });
     };
   }
+  console.log(component);
   // () => import('module')
   return Loadable({
     loader: () => {
@@ -69,16 +70,15 @@ function getFlatMenuData(menus) {
   return keys;
 }
 
-export const getRouterData = app => {
+export async function getRouterData(app) {
   const routerConfig = {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
     '/article/list': {
-      component: dynamicWrapper(app, ['article', 'tag'], () => import('../routes/Article/SearchArticle')),
-    },
-    '/article/demo': {
-      component: dynamicWrapper(app, ['list'], () => import('../routes/List/Articles')),
+      component: dynamicWrapper(app, ['article', 'tag'], () =>
+        import('../routes/Article/SearchArticle')
+      ),
     },
     '/article/tag': {
       component: dynamicWrapper(app, ['tag'], () => import('../routes/Tag/TagList')),
@@ -117,7 +117,7 @@ export const getRouterData = app => {
     },
   };
   // Get name from ./menu.js or just set it in the router data.
-  const menuData = getFlatMenuData(getMenuData());
+  const menuData = getFlatMenuData(await getMenuData());
   // Route configuration data
   // eg. {name,authority ...routerConfig }
   const routerData = {};
@@ -145,7 +145,7 @@ export const getRouterData = app => {
         hideInBreadcrumb: router.hideInBreadcrumb || menuItem.hideInBreadcrumb,
       };
       routerData[path] = router;
-    }    
+    }
   });
   return routerData;
-};
+}
