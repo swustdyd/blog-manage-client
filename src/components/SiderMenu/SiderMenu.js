@@ -30,7 +30,6 @@ const getIcon = icon => {
  */
 export const getFlatMenuKeys = menu =>
   menu.reduce((keys, item) => {
-    console.log(keys)
     keys.push(item.path);
     if (item.children) {
       return keys.concat(getFlatMenuKeys(item.children));
