@@ -8,17 +8,13 @@ const { ConnectedRouter } = routerRedux;
 
 function RouterConfig({ history, app }) {
   const routerData = getRouterData(app);
-  const Login = routerData['/common/login'].component;
-  const Register = routerData['/common/register'].component;
-  const RegisterResult = routerData['/common/register-result'].component;
+  const CommonLayout = routerData['/common'].component;
   const BasicLayout = routerData['/'].component;
   return (
       <LocaleProvider locale={zhCN}>
           <ConnectedRouter history={history}>
               <Switch>
-                  <Route path="/common/login" component={Login} />
-                  <Route path="/common/register" component={Register} />
-                  <Route path="/common/register-result" component={RegisterResult} />
+                  <Route path="/common" component={CommonLayout} />
                   <Route
                     path="/"
                     render={props => {

@@ -5,7 +5,6 @@ import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import { Link } from 'dva/router';
 import NoticeIcon from '../NoticeIcon';
-import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 
 export default class GlobalHeader extends PureComponent {
@@ -70,12 +69,12 @@ export default class GlobalHeader extends PureComponent {
     } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <Menu.Item disabled>
-          <Icon type="user" />个人中心
+        <Menu.Item>
+          <Icon type="user" /><Link to="/user/detail">个人中心</Link>
         </Menu.Item>
-        <Menu.Item disabled>
+        {/* <Menu.Item disabled>
           <Icon type="setting" />设置
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key="triggerError">
           <Icon type="close-circle" />触发报错
         </Menu.Item>
@@ -100,7 +99,7 @@ export default class GlobalHeader extends PureComponent {
           onClick={this.toggle}
         />
         <div className={styles.right}>
-          <HeaderSearch
+          {/* <HeaderSearch
             className={`${styles.action} ${styles.search}`}
             placeholder="站内搜索"
             dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
@@ -110,7 +109,7 @@ export default class GlobalHeader extends PureComponent {
             onPressEnter={value => {
               console.log('enter', value); // eslint-disable-line
             }}
-          />
+          /> */}
           <Tooltip title="使用文档">
             <a
               target="_blank"

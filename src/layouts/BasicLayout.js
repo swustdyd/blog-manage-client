@@ -274,28 +274,15 @@ export default class BasicLayout extends React.PureComponent {
                               component={item.component}
                             />
                         ))}
-                        <Redirect exact from="/" to={baseRedirect} />
+                        {baseRedirect ? <Redirect exact from="/" to={baseRedirect} /> : null}
                         <Route render={NotFound} />
                     </Switch>
                 </Content>
                 <Footer style={{ padding: 0 }}>
                     <GlobalFooter
-                      links={[
-                        {
-                          key: 'Blog Manage',
-                          title: 'Blog Manage',
-                          blankTarget: true,
-                        },
-                        {
-                          key: 'github',
-                          title: <Icon type="github" />,
-                          href: 'https://github.com/swustdyd/blog-manage-client',
-                          blankTarget: true,
-                        },
-                      ]}
                       copyright={
                           <Fragment>
-                            Copyright <Icon type="copyright" /> DYD
+                            Blog Manage Copyright <Icon type="copyright" /> DYD <a href="https://github.com/swustdyd/blog-manage-client"><Icon type="github" /></a>
                           </Fragment>
                       }
                     />

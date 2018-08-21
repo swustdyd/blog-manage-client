@@ -102,8 +102,8 @@ export function getRouterData(app, menus = []) {
         import('../routes/Exception/triggerException')
       ),
     },
-    '/user': {
-      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    '/common': {
+      component: dynamicWrapper(app, [], () => import('../layouts/CommonLayout')),
     },
     '/common/login': {
       component: dynamicWrapper(app, ['login'], () => import('../routes/Common/Login')),
