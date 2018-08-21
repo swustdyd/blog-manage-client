@@ -1,6 +1,6 @@
 import mockjs from 'mockjs';
 import { getRule, postRule } from './mock/rule';
-import { getActivities, getNotice, getFakeList, getArticles, getTags } from './mock/api';
+import { getActivities, getNotice, getFakeList, getArticles, getTags, adminMenus, superAdminMenus } from './mock/api';
 import { getFakeChartData } from './mock/chart';
 import { getProfileBasicData } from './mock/profile';
 import { getProfileAdvancedData } from './mock/profile';
@@ -78,14 +78,16 @@ const proxy = {
         status: 'ok',
         type,
         currentAuthority: 'user',
+        menus: adminMenus
       });
       return;
     }
-    if (password === '123456' && userName === 'user') {
+    if (password === '888888' && userName === 'superAdmin') {
       res.send({
         status: 'ok',
         type,
         currentAuthority: 'user',
+        menus: superAdminMenus
       });
       return;
     }

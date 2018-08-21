@@ -30,6 +30,7 @@ const getIcon = icon => {
  */
 export const getFlatMenuKeys = menu =>
   menu.reduce((keys, item) => {
+    console.log(keys)
     keys.push(item.path);
     if (item.children) {
       return keys.concat(getFlatMenuKeys(item.children));
@@ -59,12 +60,17 @@ export default class SiderMenu extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location } = this.props;
-    if (nextProps.location.pathname !== location.pathname) {
-      this.setState({
-        openKeys: this.getDefaultCollapsedSubMenus(nextProps),
-      });
-    }
+    // const { location } = this.props;
+    // if (nextProps.location.pathname !== location.pathname) {
+    //   this.flatMenuKeys = getFlatMenuKeys(nextProps.menuData);
+    //   this.setState({
+    //     openKeys: this.getDefaultCollapsedSubMenus(nextProps),
+    //   });
+    // }
+    this.flatMenuKeys = getFlatMenuKeys(nextProps.menuData);
+    this.setState({
+      openKeys: this.getDefaultCollapsedSubMenus(nextProps),
+    });
   }
 
   /**

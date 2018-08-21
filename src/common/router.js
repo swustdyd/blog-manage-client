@@ -2,7 +2,6 @@ import React, { createElement } from 'react';
 import { Spin } from 'antd';
 import pathToRegexp from 'path-to-regexp';
 import Loadable from 'react-loadable';
-import { getMenuData } from './menu';
 
 let routerDataCache;
 
@@ -70,7 +69,7 @@ function getFlatMenuData(menus) {
   return keys;
 }
 
-export async function getRouterData(app) {
+export function getRouterData(app, menus = []) {
   const routerConfig = {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
@@ -106,18 +105,18 @@ export async function getRouterData(app) {
     '/user': {
       component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },
-    '/user/login': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
+    '/common/login': {
+      component: dynamicWrapper(app, ['login'], () => import('../routes/Common/Login')),
     },
-    '/user/register': {
-      component: dynamicWrapper(app, ['register'], () => import('../routes/User/Register')),
+    '/common/register': {
+      component: dynamicWrapper(app, ['register'], () => import('../routes/Common/Register')),
     },
-    '/user/register-result': {
-      component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
+    '/common/register-result': {
+      component: dynamicWrapper(app, [], () => import('../routes/Common/RegisterResult')),
     },
   };
   // Get name from ./menu.js or just set it in the router data.
-  const menuData = getFlatMenuData(await getMenuData());
+  const menuData = getFlatMenuData(menus);
   // Route configuration data
   // eg. {name,authority ...routerConfig }
   const routerData = {};
@@ -129,7 +128,7 @@ export async function getRouterData(app) {
     const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
     let menuItem = {};
     // If menuKey is not empty
-    if (menuKey || path === '/' || path.indexOf('exception')) {
+    if (menuKey || path === '/' || path.indexOf('exception') !== -1 || path.indexOf('common') !== -1) {
       menuItem = menuData[menuKey] || {};
 
       // base on menu config

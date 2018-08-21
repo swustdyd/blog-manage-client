@@ -332,6 +332,87 @@ export const getArticles = renderTemplate(6, articleTemplate, (template, index) 
   return {...template, id, title: `文章${id}标题`}
 });
 
+export const adminMenus = [
+  {
+    name: '文章管理',
+    icon: 'file-text',
+    path: 'article',
+    children: [
+      {
+        name: '文章统计',
+        path: 'chart',
+      },
+      {
+        name: '文章列表',
+        path: 'list',
+      },
+      {
+        name: '标签设置',
+        path: 'tag',
+      },
+    ],
+  },
+  {
+    name: '我的',
+    icon: 'user',
+    path: 'user',
+    children: [
+      {
+        name: '个人中心',
+        path: 'detail',
+      },
+    ],
+  },
+];
+
+export const superAdminMenus = [
+  {
+    name: '文章管理',
+    icon: 'file-text',
+    path: 'article',
+    children: [
+      {
+        name: '文章统计',
+        path: 'chart',
+      },
+      {
+        name: '文章列表',
+        path: 'list',
+      },
+      {
+        name: '标签设置',
+        path: 'tag',
+      },
+    ],
+  },
+  {
+    name: '系统设置',
+    icon: 'setting',
+    path: 'system',
+    children: [
+      {
+        name: '角色设置',
+        path: 'role',
+      },
+      {
+        name: '用户列表',
+        path: 'user-list',
+      },
+    ],
+  },
+  {
+    name: '我的',
+    icon: 'user',
+    path: 'user',
+    children: [
+      {
+        name: '个人中心',
+        path: 'detail',
+      },
+    ],
+  },
+];
+
 export default {
   getNotice,
   getActivities,

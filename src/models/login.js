@@ -21,7 +21,8 @@ export default {
       });
       // Login successfully
       if (response.status === 'ok') {
-        reloadAuthorized();
+        // reloadAuthorized();
+        localStorage.setItem('user-menus', JSON.stringify(response.menus))
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;

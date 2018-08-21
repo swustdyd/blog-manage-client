@@ -1,5 +1,4 @@
 import { isUrl } from '../utils/utils';
-import { getMenus } from '../services/api';
 
 export const menuData = [
   {
@@ -68,6 +67,10 @@ export function formatter(data, parentPath = '/', parentAuthority) {
 }
 
 export async function getMenuData() {
-  const { result } = await getMenus();
-  return formatter(result);
+  const menus = localStorage.getItem('user-menus');
+  if(!menus){    
+    return [];
+  }else{
+    return JSON.parse(menus);
+  }
 }
