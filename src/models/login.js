@@ -2,7 +2,6 @@ import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { fakeAccountLogin } from '../services/api';
 import { setAuthority } from '../utils/authority';
-import { reloadAuthorized } from '../utils/Authorized';
 import { getPageQuery } from '../utils/utils';
 
 export default {
@@ -42,6 +41,7 @@ export default {
       }
     },
     *logout(_, { put }) {
+      localStorage.removeItem('user-menus')
       yield put({
         type: 'changeLoginStatus',
         payload: {
@@ -49,10 +49,10 @@ export default {
           currentAuthority: 'guest',
         },
       });
-      reloadAuthorized();
+      // reloadAuthorized();
       yield put(
         routerRedux.push({
-          pathname: '/user/login',
+          pathname: '/common/login',
           search: stringify({
             redirect: window.location.href,
           }),
