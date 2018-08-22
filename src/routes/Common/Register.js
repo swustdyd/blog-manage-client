@@ -36,11 +36,12 @@ export default class Register extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { form, dispatch } = this.props;
-    const account = form.getFieldValue('mail');
-    if (nextProps.register.status === 'ok') {
+    const { register:{result} } = nextProps;
+    const account = form.getFieldValue('email');
+    if (result.ok) {
       dispatch(
         routerRedux.push({
-          pathname: '/user/register-result',
+          pathname: '/common/register-result',
           state: {
             account,
           },
@@ -86,7 +87,7 @@ export default class Register extends Component {
         dispatch({
           type: 'register/submit',
           payload: {
-            ...values,
+            user: values,
             prefix,
           },
         });
@@ -149,15 +150,15 @@ export default class Register extends Component {
     const value = form.getFieldValue('password');
     const passwordStatus = this.getPasswordStatus();
     return value && value.length ? (
-      <div className={styles[`progress-${passwordStatus}`]}>
-        <Progress
-          status={passwordProgressMap[passwordStatus]}
-          className={styles.progress}
-          strokeWidth={6}
-          percent={value.length * 10 > 100 ? 100 : value.length * 10}
-          showInfo={false}
-        />
-      </div>
+        <div className={styles[`progress-${passwordStatus}`]}>
+            <Progress
+              status={passwordProgressMap[passwordStatus]}
+              className={styles.progress}
+              strokeWidth={6}
+              percent={value.length * 10 > 100 ? 100 : value.length * 10}
+              showInfo={false}
+            />
+        </div>
     ) : null;
   };
 
@@ -166,125 +167,135 @@ export default class Register extends Component {
     const { getFieldDecorator } = form;
     const { count, prefix, help, visible } = this.state;
     return (
-      <div className={styles.main}>
-        <h3>注册</h3>
-        <Form onSubmit={this.handleSubmit}>
-          <FormItem>
-            {getFieldDecorator('mail', {
-              rules: [
-                {
-                  required: true,
-                  message: '请输入邮箱地址！',
-                },
-                {
-                  type: 'email',
-                  message: '邮箱地址格式错误！',
-                },
-              ],
-            })(<Input size="large" placeholder="邮箱" />)}
-          </FormItem>
-          <FormItem help={help}>
-            <Popover
-              content={
-                <div style={{ padding: '4px 0' }}>
-                  {passwordStatusMap[this.getPasswordStatus()]}
-                  {this.renderPasswordProgress()}
-                  <div style={{ marginTop: 10 }}>
-                    请至少输入 6 个字符。请不要使用容易被猜到的密码。
-                  </div>
-                </div>
-              }
-              overlayStyle={{ width: 240 }}
-              placement="right"
-              visible={visible}
-            >
-              {getFieldDecorator('password', {
-                rules: [
-                  {
-                    validator: this.checkPassword,
-                  },
-                ],
-              })(<Input size="large" type="password" placeholder="至少6位密码，区分大小写" />)}
-            </Popover>
-          </FormItem>
-          <FormItem>
-            {getFieldDecorator('confirm', {
-              rules: [
-                {
-                  required: true,
-                  message: '请确认密码！',
-                },
-                {
-                  validator: this.checkConfirm,
-                },
-              ],
-            })(<Input size="large" type="password" placeholder="确认密码" />)}
-          </FormItem>
-          <FormItem>
-            <InputGroup compact>
-              <Select
-                size="large"
-                value={prefix}
-                onChange={this.changePrefix}
-                style={{ width: '20%' }}
-              >
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-              </Select>
-              {getFieldDecorator('mobile', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入手机号！',
-                  },
-                  {
-                    pattern: /^1\d{10}$/,
-                    message: '手机号格式错误！',
-                  },
-                ],
-              })(<Input size="large" style={{ width: '80%' }} placeholder="11位手机号" />)}
-            </InputGroup>
-          </FormItem>
-          <FormItem>
-            <Row gutter={8}>
-              <Col span={16}>
-                {getFieldDecorator('captcha', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入验证码！',
-                    },
-                  ],
-                })(<Input size="large" placeholder="验证码" />)}
-              </Col>
-              <Col span={8}>
-                <Button
-                  size="large"
-                  disabled={count}
-                  className={styles.getCaptcha}
-                  onClick={this.onGetCaptcha}
-                >
-                  {count ? `${count} s` : '获取验证码'}
-                </Button>
-              </Col>
-            </Row>
-          </FormItem>
-          <FormItem>
-            <Button
-              size="large"
-              loading={submitting}
-              className={styles.submit}
-              type="primary"
-              htmlType="submit"
-            >
-              注册
-            </Button>
-            <Link className={styles.login} to="/user/login">
-              使用已有账户登录
-            </Link>
-          </FormItem>
-        </Form>
-      </div>
+        <div className={styles.main}>
+            <h3>注册</h3>
+            <Form onSubmit={this.handleSubmit}>
+                <FormItem>
+                    {getFieldDecorator('name', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请输入昵称！',
+                        },
+                      ],
+                    })(<Input size="large" placeholder="昵称" />)}
+                </FormItem>
+                <FormItem>
+                    {getFieldDecorator('email', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请输入邮箱地址！',
+                        },
+                        {
+                          type: 'email',
+                          message: '邮箱地址格式错误！',
+                        },
+                      ],
+                    })(<Input size="large" placeholder="邮箱" />)}
+                </FormItem>
+                <FormItem help={help}>
+                    <Popover
+                      content={
+                          <div style={{ padding: '4px 0' }}>
+                              {passwordStatusMap[this.getPasswordStatus()]}
+                              {this.renderPasswordProgress()}
+                              <div style={{ marginTop: 10 }}>
+                                  请至少输入 6 个字符。请不要使用容易被猜到的密码。
+                              </div>
+                          </div>
+                      }
+                      overlayStyle={{ width: 240 }}
+                      placement="right"
+                      visible={visible}
+                    >
+                        {getFieldDecorator('password', {
+                          rules: [
+                            {
+                              validator: this.checkPassword,
+                            },
+                          ],
+                        })(<Input size="large" type="password" placeholder="至少6位密码，区分大小写" />)}
+                    </Popover>
+                </FormItem>
+                <FormItem>
+                    {getFieldDecorator('confirm', {
+                      rules: [
+                        {
+                          required: true,
+                          message: '请确认密码！',
+                        },
+                        {
+                          validator: this.checkConfirm,
+                        },
+                      ],
+                    })(<Input size="large" type="password" placeholder="确认密码" />)}
+                </FormItem>
+                <FormItem>
+                    <InputGroup compact>
+                        <Select
+                          size="large"
+                          value={prefix}
+                          onChange={this.changePrefix}
+                          style={{ width: '20%' }}
+                        >
+                            <Option value="86">+86</Option>
+                            <Option value="87">+87</Option>
+                        </Select>
+                        {getFieldDecorator('phone', {
+                          rules: [
+                            {
+                              required: true,
+                              message: '请输入手机号！',
+                            },
+                            {
+                              pattern: /^1\d{10}$/,
+                              message: '手机号格式错误！',
+                            },
+                          ],
+                        })(<Input size="large" style={{ width: '80%' }} placeholder="11位手机号" />)}
+                    </InputGroup>
+                </FormItem>
+                <FormItem>
+                    <Row gutter={8}>
+                        <Col span={16}>
+                            {getFieldDecorator('captcha', {
+                              rules: [
+                                {
+                                  required: true,
+                                  message: '请输入验证码！',
+                                },
+                              ],
+                            })(<Input size="large" placeholder="888888" />)}
+                        </Col>
+                        <Col span={8}>
+                            <Button
+                              size="large"
+                              disabled={count}
+                              className={styles.getCaptcha}
+                              onClick={this.onGetCaptcha}
+                            >
+                                {count ? `${count} s` : '获取验证码'}
+                            </Button>
+                        </Col>
+                    </Row>
+                </FormItem>
+                <FormItem>
+                    <Button
+                      size="large"
+                      loading={submitting}
+                      className={styles.submit}
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      注册
+                    </Button>
+                    <Link className={styles.login} to="/common/login">
+                      使用已有账户登录
+                    </Link>
+                </FormItem>
+            </Form>
+        </div>
     );
   }
 }

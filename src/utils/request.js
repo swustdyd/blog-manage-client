@@ -1,6 +1,6 @@
 import fetch from 'dva/fetch';
 import { notification } from 'antd';
-import { routerRedux } from 'dva/router';
+// import { routerRedux } from 'dva/router';
 import store from '../index';
 
 const codeMessage = {
@@ -33,6 +33,20 @@ function checkStatus(response) {
   error.name = response.status;
   error.response = response;
   throw error;
+}
+
+function checkResponse(res){
+  const {errorCode, message, ok} = res;
+  if(!ok && errorCode !== 500){
+    notification.error({
+      message,
+    });
+    const error = new Error(message);
+    error.name = errorCode;
+    throw error;
+  }else{
+    return res;
+  }
 }
 
 /**
@@ -70,31 +84,26 @@ export default function request(url, options) {
 
   return fetch(url, newOptions)
     .then(checkStatus)
-    .then(response => {
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
-      return response.json();
-    })
+    .then(res => res.json())
+    .then(checkResponse)
     .catch(e => {
       const { dispatch } = store;
       const status = e.name;
-      if (status === 401) {
+      if (String(status).indexOf('401') !== -1) {
         dispatch({
           type: 'login/logout',
         });
-        return;
       }
-      if (status === 403) {
-        dispatch(routerRedux.push('/exception/403'));
-        return;
-      }
-      if (status <= 504 && status >= 500) {
-        dispatch(routerRedux.push('/exception/500'));
-        return;
-      }
-      if (status >= 404 && status < 422) {
-        dispatch(routerRedux.push('/exception/404'));
-      }
+      // if (status === 403) {
+      //   dispatch(routerRedux.push('/exception/403'));
+      //   return;
+      // }
+      // if (status <= 504 && status >= 500) {
+      //   dispatch(routerRedux.push('/exception/500'));
+      //   return;
+      // }
+      // if (status >= 404 && status < 422) {
+      //   dispatch(routerRedux.push('/exception/404'));
+      // }
     });
 }

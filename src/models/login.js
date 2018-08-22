@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { fakeAccountLogin } from '../services/api';
-import { setAuthority } from '../utils/authority';
+import { message } from 'antd';
+import { accountLogin } from '../services/api';
 import { getPageQuery } from '../utils/utils';
 
 export default {
@@ -13,15 +13,19 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(accountLogin, payload);        
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: {
+          status: true,
+        },
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.ok) {
         // reloadAuthorized();
-        localStorage.setItem('user-menus', JSON.stringify(response.menus))
+        if(response.menus){
+          localStorage.setItem('user-menus', JSON.stringify(response.menus))
+        }
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -38,7 +42,9 @@ export default {
           }
         }
         yield put(routerRedux.replace(redirect || '/'));
-      }
+      }else{
+        message.error(response.message);
+      }      
     },
     *logout(_, { put }) {
       localStorage.removeItem('user-menus')
@@ -46,10 +52,8 @@ export default {
         type: 'changeLoginStatus',
         payload: {
           status: false,
-          currentAuthority: 'guest',
         },
       });
-      // reloadAuthorized();
       yield put(
         routerRedux.push({
           pathname: '/common/login',
@@ -63,11 +67,9 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
       return {
         ...state,
         status: payload.status,
-        type: payload.type,
       };
     },
   },

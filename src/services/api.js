@@ -61,14 +61,21 @@ export async function queryFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request('http://localhost:3001/login', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function accountLogin(params) {
+  return request('http://localhost:3001/login', {
     method: 'POST',
     body: params,
   });
 }
 
 export async function fakeRegister(params) {
-  return request('/api/register', {
+  return request('http://localhost:3001/register', {
     method: 'POST',
     body: params,
   });
