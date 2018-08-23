@@ -24,19 +24,15 @@ export default {
       try {
         const response = yield call(saveOrUpdateRole, payload);
         if(response.ok){
-          if(response){
+          if(resolve){
             resolve(response);
           }
+          yield put({
+            type: 'hideModal',
+          });
         }else if(reject){          
             reject(response);
         }
-        yield put({
-          type: 'hideModal',
-          payload: {
-            list: response.result.list,
-            total: response.result.total,
-          },
-        });
       } catch (e) {
         if(reject){          
           reject(e)
@@ -60,7 +56,7 @@ export default {
       };
     },
     hideModal(state){
-      return {
+      return { 
         ...state,
         showModal: false,
       };

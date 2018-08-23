@@ -37,7 +37,7 @@ function checkStatus(response) {
 
 function checkResponse(res){
   const {errorCode, message, ok} = res;
-  if(!ok && errorCode !== 500){
+  if(!ok && errorCode === 500){
     notification.error({
       message,
     });
@@ -59,7 +59,12 @@ function checkResponse(res){
 export default function request(url, options) {
   const defaultOptions = {
     credentials: 'include',
+    headers: {},
   };
+  const token = localStorage.getItem('token');
+  if(token){
+    defaultOptions.headers.Authorization = token;
+  }
   const newOptions = { ...defaultOptions, ...options };
   if (
     newOptions.method === 'POST' ||
@@ -81,7 +86,6 @@ export default function request(url, options) {
       };
     }
   }
-
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(res => res.json())

@@ -15,6 +15,8 @@ export default class List extends React.Component {
     this.state = {
       modalSetting: {},
       modalContent: {},
+      pageSize: 10,
+      currentIndex: 0,
     };
   }
 
@@ -22,10 +24,22 @@ export default class List extends React.Component {
     this.handleSearchRole();
   }
 
-  handleSearchRole() {
+  handleSearchRole(e, options = {}) {
+    if(e){
+      e.preventDefault();
+    }
+    const currentIndex = options.pageIndex || 0;
+    this.setState({
+      currentIndex,
+    })
     const { dispatch } = this.props;
+    const {pageSize} = this.state;
     dispatch({
       type: 'role/searchRoles',
+      payload: {
+        offset: currentIndex * pageSize,
+        pageSize,
+      },
     });
   }
 
@@ -52,63 +66,44 @@ export default class List extends React.Component {
 
   render() {
     const {
-      role: { list, showModal },
+      role: { list, showModal, total },
       searching,
       dispatch,
     } = this.props;
-    const { modalSetting, modalContent } = this.state;
+    const { modalSetting, modalContent, pageSize, currentIndex } = this.state;
+
+    const pagination = {
+        total,
+        current: currentIndex + 1,
+        pageSize,
+        onChange: (pageIndex) => {
+            this.handleSearchRole(null, {pageIndex: pageIndex - 1})
+        },
+    };
     const columns = [
       {
         title: '名称',
         dataIndex: 'name',
         render: (name, record) => (
-          <a
-            onClick={() => {
-              this.setState({
-                modalSetting: {
-                  title: `编辑角色：“${name}”`,
-                },
-                modalContent: (
-                  <RoleEdit
-                    defaultRole={{
-                      ...record,
-                      menus: [
-                        {
-                          name: '文章管理',
-                          path: 'article',
-                          icon: 'file-text',
-                          children: [
-                            { name: '文章列表', path: 'list' },
-                            { name: '标签设置', path: 'tag' },
-                          ],
-                        },
-                        {
-                          name: '系统设置',
-                          path: 'system',
-                          icon: 'setting',
-                          children: [
-                            { name: '角色设置', path: 'role' },
-                            { name: '用户列表', path: 'user-list' },
-                          ],
-                        },
-                        {
-                          name: '我的',
-                          path: 'user',
-                          icon: 'user',
-                          children: [{ name: '个人中心', path: 'detail' }],
-                        },
-                      ],
-                    }}
-                  />
-                ),
-              });
-              dispatch({
-                type: 'role/showModal',
-              });
-            }}
-          >
-            {name}
-          </a>
+            <a
+              onClick={() => {
+                this.setState({
+                  modalSetting: {
+                    title: `编辑角色：“${name}”`,
+                  },
+                  modalContent: (
+                      <RoleEdit
+                        defaultRole={record}
+                      />
+                  ),
+                });
+                dispatch({
+                  type: 'role/showModal',
+                });
+              }}
+            >
+                {name}
+            </a>
         ),
       },
       {
@@ -128,44 +123,45 @@ export default class List extends React.Component {
       {
         dataIndex: 'id',
         render: (id, record) => (
-          <Popconfirm
-            title={`是否删除“${record.name}”`}
-            okText="是"
-            cancelText="否"
-            onConfirm={() => this.handleDeleteRole(record)}
-          >
-            <Icon className={styles.deleteIcon} type="delete" />
-          </Popconfirm>
+            <Popconfirm
+              title={`是否删除“${record.name}”`}
+              okText="是"
+              cancelText="否"
+              onConfirm={() => this.handleDeleteRole(record)}
+            >
+                <Icon className={styles.deleteIcon} type="delete" />
+            </Popconfirm>
         ),
       },
     ];
     return (
-      <div className={styles.container}>
-        <Button type="primary" onClick={() => this.handleNewRole()}>
-          新增角色
-        </Button>
-        <Table
-          className={styles.table}
-          rowKey="id"
-          columns={columns}
-          loading={searching}
-          dataSource={list}
-        />
-        <Modal
-          destroyOnClose
-          visible={showModal}
-          maskClosable={false}
-          footer={null}
-          {...modalSetting}
-          onCancel={() => {
-            dispatch({
-              type: 'role/hideModal',
-            });
-          }}
-        >
-          {modalContent}
-        </Modal>
-      </div>
+        <div className={styles.container}>
+            <Button type="primary" onClick={() => this.handleNewRole()}>
+              新增角色
+            </Button>
+            <Table
+              className={styles.table}
+              rowKey="id"
+              columns={columns}
+              loading={searching}
+              dataSource={list}
+              pagination={pagination}
+            />
+            <Modal
+              destroyOnClose
+              visible={showModal}
+              maskClosable={false}
+              footer={null}
+              {...modalSetting}
+              onCancel={() => {
+                dispatch({
+                  type: 'role/hideModal',
+                });
+              }}
+            >
+                {modalContent}
+            </Modal>
+        </div>
     );
   }
 }

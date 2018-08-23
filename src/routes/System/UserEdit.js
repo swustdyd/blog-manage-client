@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Input, Icon, Select} from 'antd';
+import { Form, Button, Input, Icon, Select, message} from 'antd';
 import { connect } from 'dva';
 
 import styles from './UserEdit.less'
@@ -28,9 +28,24 @@ export default class Edit extends React.Component{
         form.validateFieldsAndScroll((err, values) => {
             if(!err){
                 const user = values;
-                dispatch({
-                    type: 'user/saveOrUpdateUser',
-                    payload: {user},
+                const {defaultUser = {}} = this.props;
+                if(defaultUser.id){
+                    user.id = defaultUser.id;
+                }
+                new Promise((resolve, reject) => {
+                    dispatch({
+                        type: 'user/saveOrUpdateUser',
+                        payload: {user},
+                        resolve,
+                        reject,
+                    })
+                }).then(res => {
+                    message.success(res.message);
+                    dispatch({
+                        type: 'user/searchUsers',
+                    })
+                }).catch(error => {
+                    message.error(error.message);
                 })
             }
         })
@@ -66,8 +81,8 @@ export default class Edit extends React.Component{
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="角色">
-                    {getFieldDecorator('role', {
-                        initialValue: defaultUser.role,
+                    {getFieldDecorator('roleId', {
+                        initialValue: defaultUser.roleId,
                     })(
                         <Select placeholder="请选择角色...">
                             {this.renderRoleOptions()}

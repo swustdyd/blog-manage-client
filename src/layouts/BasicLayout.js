@@ -231,8 +231,8 @@ export default class BasicLayout extends React.PureComponent {
     const {
       currentUser,
       collapsed,
-      fetchingNotices,
-      notices,
+      // fetchingNotices,
+      // notices,
       match,
       location,
     } = this.props;
@@ -255,8 +255,8 @@ export default class BasicLayout extends React.PureComponent {
                     <GlobalHeader
                       logo={logo}
                       currentUser={currentUser}
-                      fetchingNotices={fetchingNotices}
-                      notices={notices}
+                      // fetchingNotices={fetchingNotices}
+                      // notices={notices}
                       collapsed={collapsed}
                       isMobile={mb}
                       onNoticeClear={this.handleNoticeClear}

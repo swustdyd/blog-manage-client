@@ -13,18 +13,20 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(accountLogin, payload);        
-      yield put({
-        type: 'changeLoginStatus',
-        payload: {
-          status: true,
-        },
-      });
+      const response = yield call(accountLogin, payload);  
       // Login successfully
-      if (response.ok) {
-        // reloadAuthorized();
-        if(response.menus){
-          localStorage.setItem('user-menus', JSON.stringify(response.menus))
+      if (response.ok) {      
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            status: true,
+          },
+        });
+        if(response.result && response.result.menus){
+          localStorage.setItem('user-menus', JSON.stringify(response.result.menus));
+        }
+        if(response.result && response.result.token){
+          localStorage.setItem('token', response.result.token);
         }
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

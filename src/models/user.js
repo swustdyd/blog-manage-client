@@ -21,7 +21,7 @@ export default {
       const response = yield call(queryCurrent);
       yield put({
         type: 'saveCurrentUser',
-        payload: response,
+        payload: response.result,
       });
     },
     *searchUsers({payload}, {call, put}){
@@ -32,16 +32,22 @@ export default {
       });
     },
     *saveOrUpdateUser({payload, resolve, reject}, {call, put}){
-      const response = yield call(saveOrUpdateUser, payload);
-      if(response.ok){
-        if(resolve){
-          resolve(response);
+      try {        
+        const response = yield call(saveOrUpdateUser, payload);
+        if(response.ok){
+          if(resolve){
+            resolve(response);
+          }
+          yield put({
+            type: 'hideModal',
+          })
+        }else if(reject){
+          reject(response);
         }
-        yield put({
-          type: 'hideModal',
-        })
-      }else if(reject){
-        reject(resolve);
+      } catch (e) {
+        if(reject){
+          reject(e);
+        }
       }
     },
   },

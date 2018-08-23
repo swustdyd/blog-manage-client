@@ -101,11 +101,11 @@ export async function saveOrUpdateTag(params) {
 }
 
 export async function searchRoles(params) {
-  return request(`/api/searchRoles?${stringify(params)}`);
+  return request(`http://localhost:3001/searchRoles?${stringify(params)}`);
 }
 
 export async function saveOrUpdateRole(params) {
-  return request('/api/saveOrUpdateRole', {
+  return request('http://localhost:3001/saveOrUpdateRole', {
     method: 'POST',
     body: params,
   });
