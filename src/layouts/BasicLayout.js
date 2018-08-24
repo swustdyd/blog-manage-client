@@ -101,11 +101,15 @@ export default class BasicLayout extends React.PureComponent {
     breadcrumbNameMap: PropTypes.object,
   };
 
-  state = {
-    isMobile,
-    routerData: {},
-    menuData: [],
-  };
+  constructor(props){
+    super(props);
+
+    this.state = {
+      isMobile,
+      routerData: {},
+      menuData: [],
+    }
+  }
 
   getChildContext() {
     const { location } = this.props;
@@ -126,9 +130,10 @@ export default class BasicLayout extends React.PureComponent {
       }else{
         const formatMenuData = formatter(menuData);
         formatMenuData.forEach(getRedirect)
+        const routerData = getRouterData(app, formatMenuData);
         this.setState({
           menuData: formatMenuData,
-          routerData: getRouterData(app, formatMenuData),
+          routerData,
         })
         this.enquireHandler = enquireScreen(mobile => {
           this.setState({
