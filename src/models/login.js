@@ -23,7 +23,7 @@ export default {
           },
         });
         if(response.result && response.result.menus){
-          localStorage.setItem('user-menus', JSON.stringify(response.result.menus));
+          localStorage.setItem('user-menus', response.result.menus);
         }
         if(response.result && response.result.token){
           localStorage.setItem('token', response.result.token);
