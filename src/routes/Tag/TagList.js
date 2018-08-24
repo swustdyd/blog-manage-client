@@ -41,8 +41,9 @@ export default class TagList extends React.Component{
         if(e){
             e.preventDefault();
         }
+        const currentIndex = options.pageIndex || 0;
         this.setState({
-            currentIndex: options.pageIndex || 0,
+            currentIndex,
         })
         const {form, dispatch} = this.props;
         const {pageSize} = this.state;
@@ -51,9 +52,9 @@ export default class TagList extends React.Component{
                 dispatch({
                     type: 'tag/searchTags',
                     payload: {
-                        offset: options.pageIndex * pageSize,
+                        offset: currentIndex * pageSize,
                         pageSize,
-                        condition: values,
+                        ...values,
                     },
                 });
             }
@@ -158,7 +159,7 @@ export default class TagList extends React.Component{
                     <Row {...wrapperLayout.row}>    
                         <Col {...wrapperLayout.col}>      
                             <FormItem {...formItemLayout} label="标签名">
-                                {getFieldDecorator('searchKeyWord')(
+                                {getFieldDecorator('name')(
                                     <Input placeholder="输入搜索的内容..." />
                                 )}
                             </FormItem>

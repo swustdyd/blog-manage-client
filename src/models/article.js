@@ -1,4 +1,4 @@
-import { searchArticle } from '../services/api';
+import { searchArticle, saveOrUpdateArticle } from '../services/api';
 
 export default {
   namespace: 'article',
@@ -7,6 +7,7 @@ export default {
     list: [],
     total: 0,
     hasMore: true,
+    showModal: false,
   },
 
   effects: {
@@ -30,6 +31,25 @@ export default {
         },
       });
     },
+    *saveOrUpdateArticle({payload, resolve, reject}, {call, put}) {
+      try {        
+        const response = yield call(saveOrUpdateArticle, payload);
+        if(response.ok){
+          if(resolve){
+            resolve(response);
+          }
+          yield put({
+            type: 'hideModal',
+          });
+        }else if(reject){
+          reject(response);
+        }
+      } catch (e) {
+        if(reject){
+          reject(e);
+        }
+      }
+    },
   },
 
   reducers: {
@@ -48,6 +68,18 @@ export default {
         list: state.list,
         hasMore: action.payload.list.length > 0,
         total: action.payload.total,
+      };
+    },
+    showModal(state){
+      return {
+        ...state,
+        showModal: true,
+      };
+    },
+    hideModal(state){
+      return {
+        ...state,
+        showModal: false,
       };
     },
   },

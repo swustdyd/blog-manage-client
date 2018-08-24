@@ -1,9 +1,10 @@
 import React from 'react';
-import {Form, Input, Select, Row, Col, List, Card, Icon, Popconfirm, Tag, Button } from 'antd';
+import {Form, Input, Select, Row, Col, List, Card, Icon, Popconfirm, Tag, Button, Modal } from 'antd';
 import { connect } from 'dva';
 import TagSelect2 from '../../components/TagSelect2';
 import Ellipsis from '../../components/Ellipsis';
 import StandardFormRow from '../../components/StandardFormRow';
+import ArticleEdit from './ArticleEdit'
 
 import styles from './SearchArticle.less';
 
@@ -18,6 +19,14 @@ const { Option } = Select;
 }))
 @Form.create()
 export default class SearchArticle extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.state = {
+            modalSetting: {},
+            modalContent: {},
+        }
+    }
 
     componentDidMount(){
         const {dispatch} = this.props;
@@ -53,6 +62,21 @@ export default class SearchArticle extends React.Component{
             }
         });
     }
+    
+
+    showNewArticleModal = () => {
+        this.setState({
+            modalSetting:{
+                title: '新增文章',
+                width: 1000,
+            },
+            modalContent: <ArticleEdit />,
+        })
+        const {dispatch} = this.props;
+        dispatch({
+            type: 'article/showModal',
+        })
+    }
 
     renderLoadMore = () => {
         const {article: {hasMore}, moreLoading} = this.props;
@@ -86,17 +110,36 @@ export default class SearchArticle extends React.Component{
 
     renderCardActions = (item) => {
         const previewAction = <Icon className={styles.itemCardAction} type="eye-o" />;
-        const editAction = <Icon className={styles.itemCardAction} type="edit" />
+        const editAction = (
+            <Icon 
+                className={`${styles.itemCardAction} ${styles.itemCardActionEdit}`} 
+                type="edit" 
+                onClick={() => {
+                    this.setState({
+                        modalSetting:{
+                            title: `编辑文章“${item.title}”`,
+                            width: 1000,
+                        },
+                        modalContent: <ArticleEdit defaultArticle={item} />,
+                    })
+                    const {dispatch} = this.props;
+                    dispatch({
+                        type: 'article/showModal',
+                    })
+                }}
+            />
+            )
         const deleteAction = (
             <Popconfirm title={`是否删除“${item.title}”`} okText="是" cancelText="否">
-                <Icon className={styles.itemCardAction} type="delete" />
+                <Icon className={`${styles.itemCardAction} ${styles.itemCardActionDelete}`} type="delete" />
             </Popconfirm>
         )        
         return [previewAction, editAction, deleteAction];
     }
 
     render(){
-        const {article: {list}, tag: {list: tags}, searching, form: {getFieldDecorator, resetFields}} = this.props;
+        const {article: {list, showModal}, tag: {list: tags}, searching, form: {getFieldDecorator, resetFields}, dispatch} = this.props;
+        const { modalSetting, modalContent } = this.state;
         const loadMore = this.renderLoadMore();
         const formItemLayout = {
             labelCol: {
@@ -166,6 +209,9 @@ export default class SearchArticle extends React.Component{
                         </Row>
                     </StandardFormRow>
                     <Row className={styles.formActionContainer}>
+                        <Button className={styles.newArticleBtn} type="primary" onClick={this.showNewArticleModal}>
+                            新增文章
+                        </Button>
                         <Button type="primary" htmlType="submit">
                             {
                                 searching ? (
@@ -201,7 +247,7 @@ export default class SearchArticle extends React.Component{
                                 actions={this.renderCardActions(item)}
                             >
                                 <Card.Meta
-                                    title={<a href="#">{item.title}</a>}
+                                    title={item.title}
                                     description={
                                         <Ellipsis className={styles.itemContent} lines={3}>
                                             {item.content}
@@ -213,6 +259,20 @@ export default class SearchArticle extends React.Component{
                         </List.Item>
                     )}
                 />
+                <Modal 
+                    destroyOnClose
+                    visible={showModal}
+                    maskClosable={false}
+                    footer={null}
+                    {...modalSetting}
+                    onCancel={() => {
+                        dispatch({
+                            type: 'article/hideModal',
+                        })
+                    }}
+                >
+                    {modalContent}
+                </Modal>
             </div>
         )
     }

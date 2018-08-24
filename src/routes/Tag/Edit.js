@@ -40,23 +40,29 @@ export default class Edit extends React.Component{
     handleSubmit(event){
         event.preventDefault();
         const {form, defaultTag = {}, dispatch} = this.props;
+        const { color } = this.state;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const tag = values;
-                if(defaultTag){
-                    tag.id = defaultTag.id;
-                }
+                tag.color = color;
                 new Promise((resolve, reject) => {
                     dispatch({
                         type: 'tag/saveOrUpdateTag',
                         payload: {
-                            tag,    
+                            tag: {...defaultTag, ...tag},
                         },                        
                         resolve,
                         reject,
                     })
                 }).then(res => {
                     message.success(res.message)
+                    dispatch({
+                        type: 'tag/searchTags',
+                        payload: {
+                            offset: 0,
+                            pageSize: 10,
+                        },
+                    });
                 }).catch(e => {
                     message.error(e.message);
                 });

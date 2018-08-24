@@ -86,15 +86,22 @@ export async function queryNotices() {
 }
 
 export async function searchArticle(options) {
-  return request(`/api/searchArticle?${stringify(options)}`);
+  return request(`http://localhost:3001/searchArticle?${stringify(options)}`);
+}
+
+export async function saveOrUpdateArticle(params) {
+  return request('http://localhost:3001/saveOrUpdateArticle', {
+    method: 'POST',
+    body: params,
+  });
 }
 
 export async function searchTags(options) {
-  return request(`/api/searchTags?${stringify(options)}`);
+  return request(`http://localhost:3001/searchTags?${stringify(options)}`);
 }
 
 export async function saveOrUpdateTag(params) {
-  return request('/api/saveOrUpdateTag', {
+  return request('http://localhost:3001/saveOrUpdateTag', {
     method: 'POST',
     body: params,
   });
