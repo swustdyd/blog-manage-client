@@ -11,41 +11,67 @@ export default {
   },
 
   effects: {
-    *searchArticle(options, { call, put }) {
-      const response = yield call(searchArticle);
-      yield put({
-        type: 'saveList',
-        payload: {
-          list: response.result.list,
-          total: response.result.total,
-        },
-      });
+    *searchArticle({ payload, resolve, reject }, { call, put }) {
+      try {
+        const response = yield call(searchArticle, payload);
+        if (response.ok) {
+          if (resolve) {
+            resolve(response);
+          }
+          yield put({
+            type: 'saveList',
+            payload: {
+              list: response.result.list,
+              total: response.result.total,
+            },
+          });
+        } else if (reject) {
+          reject(response);
+        }
+      } catch (e) {
+        if (reject) {
+          reject(e);
+        }
+      }
     },
-    *loadMorArticle(options, {call, put}) {
-      const response = yield call(searchArticle);
-      yield put({
-        type: 'apendList',
-        payload: {
-          list: response.result.list,
-          total: response.result.total,
-        },
-      });
+    *loadMorArticle({ payload, resolve, reject }, { call, put }) {
+      try {
+        const response = yield call(searchArticle, payload);
+        if (response.ok) {
+          if (resolve) {
+            resolve(response);
+          }
+          yield put({
+            type: 'apendList',
+            payload: {
+              list: response.result.list,
+              total: response.result.total,
+            },
+          });
+        } else if (reject) {
+          reject(response);
+        }
+      } catch (e) {
+        if (reject) {
+          reject(e);
+        }
+      }
     },
-    *saveOrUpdateArticle({payload, resolve, reject}, {call, put}) {
-      try {        
+    *saveOrUpdateArticle({ payload, resolve, reject }, { call, put }) {
+      try {
         const response = yield call(saveOrUpdateArticle, payload);
-        if(response.ok){
-          if(resolve){
+        if (response.ok) {
+          if (resolve) {
             resolve(response);
           }
           yield put({
             type: 'hideModal',
           });
-        }else if(reject){
+        } else if (reject) {
           reject(response);
         }
       } catch (e) {
-        if(reject){
+        if (reject) {
           reject(e);
         }
       }
@@ -62,7 +88,7 @@ export default {
       };
     },
     apendList(state, action) {
-      state.list.push(...action.payload.list)
+      state.list.push(...action.payload.list);
       return {
         ...state,
         list: state.list,
@@ -70,13 +96,13 @@ export default {
         total: action.payload.total,
       };
     },
-    showModal(state){
+    showModal(state) {
       return {
         ...state,
         showModal: true,
       };
     },
-    hideModal(state){
+    hideModal(state) {
       return {
         ...state,
         showModal: false,
