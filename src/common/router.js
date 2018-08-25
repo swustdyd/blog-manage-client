@@ -34,7 +34,6 @@ const dynamicWrapper = (app, models, component) => {
       });
     };
   }
-  console.log(component);
   // () => import('module')
   return Loadable({
     loader: () => {
@@ -128,7 +127,12 @@ export function getRouterData(app, menus = []) {
     const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
     let menuItem = {};
     // If menuKey is not empty
-    if (menuKey || path === '/' || path.indexOf('exception') !== -1 || path.indexOf('common') !== -1) {
+    if (
+      menuKey ||
+      path === '/' ||
+      path.indexOf('exception') !== -1 ||
+      path.indexOf('common') !== -1
+    ) {
       menuItem = menuData[menuKey] || {};
 
       // base on menu config
