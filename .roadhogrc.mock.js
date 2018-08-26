@@ -1,6 +1,15 @@
 import mockjs from 'mockjs';
 import { getRule, postRule } from './mock/rule';
-import { getActivities, getNotice, getFakeList, getArticles, getTags, adminMenus, superAdminMenus } from './mock/api';
+import {
+  getActivities,
+  getNotice,
+  getFakeList,
+  getArticles,
+  getTags,
+  adminMenus,
+  superAdminMenus,
+  getCharts,
+} from './mock/api';
 import { getFakeChartData } from './mock/chart';
 import { getProfileBasicData } from './mock/profile';
 import { getProfileAdvancedData } from './mock/profile';
@@ -78,7 +87,7 @@ const proxy = {
         status: 'ok',
         type,
         currentAuthority: 'user',
-        menus: adminMenus
+        menus: adminMenus,
       });
       return;
     }
@@ -87,7 +96,7 @@ const proxy = {
         status: 'ok',
         type,
         currentAuthority: 'user',
-        menus: superAdminMenus
+        menus: superAdminMenus,
       });
       return;
     }
@@ -285,6 +294,25 @@ const proxy = {
           children: [{ name: '个人中心', path: 'detail' }],
         },
       ],
+    });
+  },
+  'GET /api/searchCharts': (req, res) => {
+    res.send({
+      ok: true,
+      result: {
+        list: getCharts,
+      },
+    });
+  },
+  'POST /api/saveOrUpdateChart': (req, res) => {
+    const { chart } = req.body;
+    res.send({
+      ok: chart ? true : false,
+      message: chart ? '保存成功' : '保存失败',
+      result: {
+        ...chart,
+        id: 1,
+      },
     });
   },
 };

@@ -87,6 +87,9 @@ export function getRouterData(app, menus = []) {
     '/system/user-list': {
       component: dynamicWrapper(app, ['user'], () => import('../routes/System/UserList')),
     },
+    '/chart/setting': {
+      component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/Setting')),
+    },
     '/exception/403': {
       component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
     },

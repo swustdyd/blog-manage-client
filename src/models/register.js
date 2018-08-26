@@ -1,5 +1,5 @@
-import {message} from'antd'
-import { fakeRegister } from '../services/api';
+import { message } from 'antd';
+import { register } from '../services/api';
 
 export default {
   namespace: 'register',
@@ -10,8 +10,8 @@ export default {
 
   effects: {
     *submit({ payload }, { call, put }) {
-      const response = yield call(fakeRegister, payload);
-      if(!response.ok && response.message){        
+      const response = yield call(register, payload);
+      if (!response.ok && response.message) {
         message.error(response.message);
       }
       yield put({

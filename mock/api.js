@@ -69,7 +69,7 @@ export function fakeList(count) {
       owner: user[i % 10],
       title: titles[i % 8],
       avatar: avatars[i % 8],
-      cover: parseInt(i / 4, 10) % 2 === 0 ? covers[i % 4] : covers[3 - i % 4],
+      cover: parseInt(i / 4, 10) % 2 === 0 ? covers[i % 4] : covers[3 - (i % 4)],
       status: ['active', 'exception', 'normal'][i % 3],
       percent: Math.ceil(Math.random() * 50) + 50,
       logo: avatars[i % 8],
@@ -289,7 +289,7 @@ export const getActivities = [
   },
 ];
 
-function renderTemplate(num, template, callback){
+function renderTemplate(num, template, callback) {
   const tags = [];
   for (let i = 0; i < num; i += 1) {
     tags.push(callback(template, i));
@@ -298,38 +298,66 @@ function renderTemplate(num, template, callback){
 }
 
 const tagTemplate = {
-  id: 1, 
-  name: 'tag1', 
-  description: 'test tag describtion', 
-  createAt: '2018-10-25 12:56:30', 
+  id: 1,
+  name: 'tag1',
+  description: 'test tag describtion',
+  createAt: '2018-10-25 12:56:30',
   updateAt: '2018-10-25 12:56:30',
   color: '#333',
-}
+};
 
-const tagColors = ["#CC9999", "#666699", "#FF9900", "#0099CC", 
-  "#CCCC99", "#CC3399", "#99CC00", "#FF6666", "#3399CC", "#CC6600", "#999999", 
-  "#CCCC33", "#FF9933", "#009933", "#0099CC", "#CCCCCC", "#FF6666", "#FF6600", 
-  "#009966", "#CC6633", "#FFCC99", "#CC6600", "#CC0066", "#009999", "#FFCC33",
+const tagColors = [
+  '#CC9999',
+  '#666699',
+  '#FF9900',
+  '#0099CC',
+  '#CCCC99',
+  '#CC3399',
+  '#99CC00',
+  '#FF6666',
+  '#3399CC',
+  '#CC6600',
+  '#999999',
+  '#CCCC33',
+  '#FF9933',
+  '#009933',
+  '#0099CC',
+  '#CCCCCC',
+  '#FF6666',
+  '#FF6600',
+  '#009966',
+  '#CC6633',
+  '#FFCC99',
+  '#CC6600',
+  '#CC0066',
+  '#009999',
+  '#FFCC33',
 ];
 
 export const getTags = renderTemplate(tagColors.length, tagTemplate, (template, index) => {
   const id = index + 1;
-  return {...template, id, name: `标签${id}`, description: `标签${id}描述`, color: tagColors[index]};
+  return {
+    ...template,
+    id,
+    name: `标签${id}`,
+    description: `标签${id}描述`,
+    color: tagColors[index],
+  };
 });
 
 const articleTemplate = {
-  id: 0, 
+  id: 0,
   title: 'test title',
-  views: 1, 
-  content: 'Ant Design, a design language for background applications, is refined by Ant UED Team', 
-  tags: getTags.slice(0, 3), 
-  createAt: '2018-10-25 12:56:30', 
+  views: 1,
+  content: 'Ant Design, a design language for background applications, is refined by Ant UED Team',
+  tags: getTags.slice(0, 3),
+  createAt: '2018-10-25 12:56:30',
   updateAt: '2018-10-25 12:56:30',
-}
+};
 
 export const getArticles = renderTemplate(6, articleTemplate, (template, index) => {
   const id = index + 1;
-  return {...template, id, title: `文章${id}标题`}
+  return { ...template, id, title: `文章${id}标题` };
 });
 
 export const adminMenus = [
@@ -412,6 +440,18 @@ export const superAdminMenus = [
     ],
   },
 ];
+
+const chartTempalte = {
+  sql: 'test sql',
+  script: 'test script',
+  createAt: '2018-10-25 12:56:30',
+  updateAt: '2018-10-25 12:56:30',
+};
+
+export const getCharts = renderTemplate(10, chartTempalte, (template, index) => {
+  const id = index + 1;
+  return { ...template, id, name: `报表${id}` };
+});
 
 export default {
   getNotice,
