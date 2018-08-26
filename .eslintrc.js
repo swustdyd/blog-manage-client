@@ -10,9 +10,7 @@ module.exports = {
     jasmine: true,
   },
   rules: {
-    'react/jsx-indent-props': [0, 4],
-    'react/jsx-indent': [1, 4],//改为4个空格缩进
-    'linebreak-style': [0, "windows"],//换行风格
+    'linebreak-style': [0, 'windows'], //换行风格
     'generator-star-spacing': [0],
     'consistent-return': [0],
     'react/forbid-prop-types': [0],
