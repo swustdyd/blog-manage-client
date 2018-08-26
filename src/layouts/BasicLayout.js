@@ -101,14 +101,14 @@ export default class BasicLayout extends React.PureComponent {
     breadcrumbNameMap: PropTypes.object,
   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
       isMobile,
       routerData: {},
       menuData: [],
-    }
+    };
   }
 
   getChildContext() {
@@ -122,29 +122,61 @@ export default class BasicLayout extends React.PureComponent {
 
   componentDidMount() {
     const { dispatch, app } = this.props;
-    getMenuData().then(menuData => {
-      if(!menuData || menuData.length < 1){
-        window.location.href = getQueryPath('/#/common/login', {
-          redirect: window.location.href,
-        })
-      }else{
-        const formatMenuData = formatter(menuData);
-        formatMenuData.forEach(getRedirect)
-        const routerData = getRouterData(app, formatMenuData);
-        this.setState({
-          menuData: formatMenuData,
-          routerData,
-        })
-        this.enquireHandler = enquireScreen(mobile => {
-          this.setState({
-            isMobile: mobile,
-          });
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: 'user/fetchCurrent',
+        resolve,
+        reject,
+      });
+    })
+      .then(() => {
+        getMenuData().then(menuData => {
+          if (!menuData || menuData.length < 1) {
+            window.location.href = getQueryPath('/#/common/login', {
+              redirect: window.location.href,
+            });
+          } else {
+            const formatMenuData = formatter(menuData);
+            formatMenuData.forEach(getRedirect);
+            const routerData = getRouterData(app, formatMenuData);
+            this.setState({
+              menuData: formatMenuData,
+              routerData,
+            });
+            this.enquireHandler = enquireScreen(mobile => {
+              this.setState({
+                isMobile: mobile,
+              });
+            });
+          }
         });
-        dispatch({
-          type: 'user/fetchCurrent',
-        });
-      }
-    })    
+      })
+      .catch(e => {
+        message.error(e.message);
+      });
+    // getMenuData().then(menuData => {
+    //   if(!menuData || menuData.length < 1){
+    //     window.location.href = getQueryPath('/#/common/login', {
+    //       redirect: window.location.href,
+    //     })
+    //   }else{
+    //     const formatMenuData = formatter(menuData);
+    //     formatMenuData.forEach(getRedirect)
+    //     const routerData = getRouterData(app, formatMenuData);
+    //     this.setState({
+    //       menuData: formatMenuData,
+    //       routerData,
+    //     })
+    //     this.enquireHandler = enquireScreen(mobile => {
+    //       this.setState({
+    //         isMobile: mobile,
+    //       });
+    //     });
+    //     dispatch({
+    //       type: 'user/fetchCurrent',
+    //     });
+    //   }
+    // })
   }
 
   componentWillUnmount() {
@@ -219,7 +251,7 @@ export default class BasicLayout extends React.PureComponent {
       });
     }
     if (key === 'userDetail') {
-      window.location.href = '/#/user/detail'
+      window.location.href = '/#/user/detail';
     }
   };
 
@@ -242,69 +274,68 @@ export default class BasicLayout extends React.PureComponent {
       location,
     } = this.props;
     const { isMobile: mb } = this.state;
-    const {routerData, menuData} = this.state;
+    const { routerData, menuData } = this.state;
     const baseRedirect = this.getBaseRedirect();
     const layout = (
+      <Layout>
+        <SiderMenu
+          logo={logo}
+          title="Blog Manage"
+          menuData={menuData}
+          collapsed={collapsed}
+          location={location}
+          isMobile={mb}
+          onCollapse={this.handleMenuCollapse}
+        />
         <Layout>
-            <SiderMenu
+          <Header style={{ padding: 0 }}>
+            <GlobalHeader
               logo={logo}
-              title="Blog Manage"
-              menuData={menuData}
+              currentUser={currentUser}
+              // fetchingNotices={fetchingNotices}
+              // notices={notices}
               collapsed={collapsed}
-              location={location}
               isMobile={mb}
+              onNoticeClear={this.handleNoticeClear}
               onCollapse={this.handleMenuCollapse}
+              onMenuClick={this.handleMenuClick}
+              onNoticeVisibleChange={this.handleNoticeVisibleChange}
             />
-            <Layout>
-                <Header style={{ padding: 0 }}>
-                    <GlobalHeader
-                      logo={logo}
-                      currentUser={currentUser}
-                      // fetchingNotices={fetchingNotices}
-                      // notices={notices}
-                      collapsed={collapsed}
-                      isMobile={mb}
-                      onNoticeClear={this.handleNoticeClear}
-                      onCollapse={this.handleMenuCollapse}
-                      onMenuClick={this.handleMenuClick}
-                      onNoticeVisibleChange={this.handleNoticeVisibleChange}
-                    />
-                </Header>
-                <Content style={{ margin: '24px 24px 0', height: '100%' }}>
-                    <Switch>
-                        {redirectData.map(item => (
-                            <Redirect key={item.from} exact from={item.from} to={item.to} />
-                        ))}
-                        {getRoutes(match.path, routerData).map(item => (
-                            <Route
-                              key={item.key}
-                              path={item.path}
-                              component={item.component}
-                            />
-                        ))}
-                        {baseRedirect ? <Redirect exact from="/" to={baseRedirect} /> : null}
-                        <Route render={NotFound} />
-                    </Switch>
-                </Content>
-                <Footer style={{ padding: 0 }}>
-                    <GlobalFooter
-                      copyright={
-                          <Fragment>
-                            Blog Manage Copyright <Icon type="copyright" /> DYD <a href="https://github.com/swustdyd/blog-manage-client"><Icon type="github" /></a>
-                          </Fragment>
-                      }
-                    />
-                </Footer>
-            </Layout>
+          </Header>
+          <Content style={{ margin: '24px 24px 0', height: '100%' }}>
+            <Switch>
+              {redirectData.map(item => (
+                <Redirect key={item.from} exact from={item.from} to={item.to} />
+              ))}
+              {getRoutes(match.path, routerData).map(item => (
+                <Route key={item.key} path={item.path} component={item.component} />
+              ))}
+              {baseRedirect ? <Redirect exact from="/" to={baseRedirect} /> : null}
+              <Route render={NotFound} />
+            </Switch>
+          </Content>
+          <Footer style={{ padding: 0 }}>
+            <GlobalFooter
+              copyright={
+                <Fragment>
+                  Blog Manage Copyright <Icon type="copyright" /> DYD{' '}
+                  <a href="https://github.com/swustdyd/blog-manage-client">
+                    <Icon type="github" />
+                  </a>
+                </Fragment>
+              }
+            />
+          </Footer>
         </Layout>
+      </Layout>
     );
 
     return (
-        <DocumentTitle title={this.getPageTitle()}>
-            <ContainerQuery query={query}>
-                {params => <div className={classNames(params)}>{layout}</div>}
-            </ContainerQuery>
-        </DocumentTitle>
+      <DocumentTitle title={this.getPageTitle()}>
+        <ContainerQuery query={query}>
+          {params => <div className={classNames(params)}>{layout}</div>}
+        </ContainerQuery>
+      </DocumentTitle>
     );
   }
 }

@@ -46,6 +46,17 @@ export const menuData = [
       },
     ],
   },
+  {
+    name: '报表渲染Test',
+    icon: 'bar-chart',
+    path: 'chart',
+    children: [
+      {
+        name: '报表设置',
+        path: 'setting',
+      },
+    ],
+  },
 ];
 
 export function formatter(data, parentPath = '/', parentAuthority) {
@@ -68,9 +79,9 @@ export function formatter(data, parentPath = '/', parentAuthority) {
 
 export async function getMenuData() {
   const menus = localStorage.getItem('user-menus');
-  if(!menus){    
+  if (!menus) {
     return [];
-  }else{
+  } else {
     return JSON.parse(menus);
   }
 }

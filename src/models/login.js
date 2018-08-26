@@ -13,19 +13,19 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(accountLogin, payload);  
+      const response = yield call(accountLogin, payload);
       // Login successfully
-      if (response.ok) {      
+      if (response.ok) {
         yield put({
           type: 'changeLoginStatus',
           payload: {
             status: true,
           },
         });
-        if(response.result && response.result.menus){
-          localStorage.setItem('user-menus', response.result.menus);
-        }
-        if(response.result && response.result.token){
+        // if(response.result && response.result.menus){
+        //   localStorage.setItem('user-menus', response.result.menus);
+        // }
+        if (response.result && response.result.token) {
           localStorage.setItem('token', response.result.token);
         }
         const urlParams = new URL(window.location.href);
@@ -44,12 +44,12 @@ export default {
           }
         }
         yield put(routerRedux.replace(redirect || '/'));
-      }else{
+      } else {
         message.error(response.message);
-      }      
+      }
     },
     *logout(_, { put }) {
-      localStorage.removeItem('user-menus')
+      localStorage.removeItem('user-menus');
       yield put({
         type: 'changeLoginStatus',
         payload: {

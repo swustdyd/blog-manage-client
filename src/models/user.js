@@ -17,35 +17,52 @@ export default {
         payload: response,
       });
     },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response.result,
-      });
+    *fetchCurrent({ resolve, reject }, { call, put }) {
+      try {
+        const response = yield call(queryCurrent);
+        if (response.ok) {
+          const { menus, user } = response.result;
+          if (menus) {
+            localStorage.setItem('user-menus', response.result.menus);
+          }
+          if (resolve) {
+            resolve(response);
+          }
+          yield put({
+            type: 'saveCurrentUser',
+            payload: user,
+          });
+        } else if (reject) {
+          reject(response);
+        }
+      } catch (e) {
+        if (reject) {
+          reject(e);
+        }
+      }
     },
-    *searchUsers({payload}, {call, put}){
+    *searchUsers({ payload }, { call, put }) {
       const response = yield call(searchUsers, payload);
       yield put({
         type: 'saveList',
         payload: response.result.list,
       });
     },
-    *saveOrUpdateUser({payload, resolve, reject}, {call, put}){
-      try {        
+    *saveOrUpdateUser({ payload, resolve, reject }, { call, put }) {
+      try {
         const response = yield call(saveOrUpdateUser, payload);
-        if(response.ok){
-          if(resolve){
+        if (response.ok) {
+          if (resolve) {
             resolve(response);
           }
           yield put({
             type: 'hideModal',
-          })
-        }else if(reject){
+          });
+        } else if (reject) {
           reject(response);
         }
       } catch (e) {
-        if(reject){
+        if (reject) {
           reject(e);
         }
       }
@@ -74,17 +91,17 @@ export default {
         },
       };
     },
-    hideModal(state){
+    hideModal(state) {
       return {
         ...state,
         showModal: false,
-      }
+      };
     },
-    showModal(state){    
+    showModal(state) {
       return {
         ...state,
         showModal: true,
-      }
+      };
     },
   },
 };
