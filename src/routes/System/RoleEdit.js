@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Input, Icon, Tree,message } from 'antd';
+import { Form, Button, Input, Icon, Tree, message } from 'antd';
 import { connect } from 'dva';
 import { menuData } from '../../common/menu';
 
@@ -43,17 +43,17 @@ const selectedTreeToMenus = tree => {
     // }
     const paths = node.key.split('/');
     if (node.children && node.children.length > 0) {
-        const childrenMenus = selectedTreeToMenus(node.children);
-        if(childrenMenus.length > 0){
-            const menu = {
-              name: node.title,
-              path: paths[paths.length - 1],
-              icon: node.icon,
-              children: childrenMenus,
-            };
-          menus.push(menu);
-        }
-    }else if(node.selected){
+      const childrenMenus = selectedTreeToMenus(node.children);
+      if (childrenMenus.length > 0) {
+        const menu = {
+          name: node.title,
+          path: paths[paths.length - 1],
+          icon: node.icon,
+          children: childrenMenus,
+        };
+        menus.push(menu);
+      }
+    } else if (node.selected) {
       menus.push({
         name: node.title,
         path: paths[paths.length - 1],
@@ -81,7 +81,7 @@ const getCheckedKeyFromMenus = (menus = [], basePath) => {
   submiting: loading.effects['tag/saveOrUpdateRole'],
 }))
 @Form.create()
-export default class Edit extends React.Component {
+export default class RoleEdit extends React.Component {
   constructor(props) {
     super(props);
     let checkedKeys = [];
@@ -148,30 +148,33 @@ export default class Edit extends React.Component {
         new Promise((resolve, reject) => {
           dispatch({
             type: 'role/saveOrUpdateRole',
-            payload: { 
-              role: {...defaultRole, ...role}, 
+            payload: {
+              role: { ...defaultRole, ...role },
             },
             resolve,
             reject,
           });
-        }).then(res => {
-            message.success(res.message)
+        })
+          .then(res => {
+            message.success(res.message);
             dispatch({
               type: 'role/searchRoles',
             });
-        }).catch(e => {
+          })
+          .catch(e => {
             message.error(e.message);
-        });
-    }});
+          });
+      }
+    });
   }
 
   renderTreeNodes(data) {
     return data.map(item => {
       if (item.children) {
         return (
-            <TreeNode title={item.title} key={item.key} dataRef={item}>
-                {this.renderTreeNodes(item.children)}
-            </TreeNode>
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
         );
       }
       return <TreeNode {...item} />;
@@ -197,60 +200,60 @@ export default class Edit extends React.Component {
       },
     };
     return (
-        <Form onSubmit={e => this.handleSubmit(e)}>
-            <FormItem {...formItemLayout} label="角色名称">
-                {getFieldDecorator('name', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '角色名称不能为空',
-                    },
-                  ],
-                  initialValue: defaultRole.name,
-                })(<Input onChange={this.handleNameChange} placeholder="请填入角色名称..." />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="类型名称">
-                {getFieldDecorator('typeName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '类型名称不能为空',
-                    },
-                    {
-                      pattern: /^[a-zA-Z]{3,20}$/,
-                      message: '类型名称必须是3-20位字母',
-                    },
-                  ],
-                  initialValue: defaultRole.typeName,
-                })(<Input placeholder="请填入类型名称..." />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="权限">
-                <Tree
-                  checkable
-                  onExpand={this.onExpand}
-                  expandedKeys={expandedKeys}
-                  autoExpandParent={autoExpandParent}
-                  onCheck={this.onCheck}
-                  checkedKeys={checkedKeys}
-                  onSelect={this.onSelect}
-                  selectedKeys={selectedKeys}
-                >
-                    {this.renderTreeNodes(treeData)}
-                </Tree>
-            </FormItem>
-            <FormItem className={styles.submitContainer}>
-                <Button type="primary" htmlType="submit">
-                    {submiting ? (
-                        <span>
-                            <Icon type="loading" />
-                            &nbsp;提交中...
-                        </span>
-                    ) : (
-                      '提交'
-                    )}
-                </Button>
-            </FormItem>
-        </Form>
+      <Form onSubmit={e => this.handleSubmit(e)}>
+        <FormItem {...formItemLayout} label="角色名称">
+          {getFieldDecorator('name', {
+            rules: [
+              {
+                required: true,
+                message: '角色名称不能为空',
+              },
+            ],
+            initialValue: defaultRole.name,
+          })(<Input onChange={this.handleNameChange} placeholder="请填入角色名称..." />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="类型名称">
+          {getFieldDecorator('typeName', {
+            rules: [
+              {
+                required: true,
+                message: '类型名称不能为空',
+              },
+              {
+                pattern: /^[a-zA-Z]{3,20}$/,
+                message: '类型名称必须是3-20位字母',
+              },
+            ],
+            initialValue: defaultRole.typeName,
+          })(<Input placeholder="请填入类型名称..." />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="权限">
+          <Tree
+            checkable
+            onExpand={this.onExpand}
+            expandedKeys={expandedKeys}
+            autoExpandParent={autoExpandParent}
+            onCheck={this.onCheck}
+            checkedKeys={checkedKeys}
+            onSelect={this.onSelect}
+            selectedKeys={selectedKeys}
+          >
+            {this.renderTreeNodes(treeData)}
+          </Tree>
+        </FormItem>
+        <FormItem className={styles.submitContainer}>
+          <Button type="primary" htmlType="submit">
+            {submiting ? (
+              <span>
+                <Icon type="loading" />
+                &nbsp;提交中...
+              </span>
+            ) : (
+              '提交'
+            )}
+          </Button>
+        </FormItem>
+      </Form>
     );
   }
 }

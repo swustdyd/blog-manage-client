@@ -79,7 +79,7 @@ export function getRouterData(app, menus = []) {
       ),
     },
     '/article/tag': {
-      component: dynamicWrapper(app, ['tag'], () => import('../routes/Tag/TagList')),
+      component: dynamicWrapper(app, ['tag'], () => import('../routes/System/TagList')),
     },
     '/system/role': {
       component: dynamicWrapper(app, ['role'], () => import('../routes/System/RoleList')),

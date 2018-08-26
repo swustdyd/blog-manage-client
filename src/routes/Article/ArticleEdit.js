@@ -12,7 +12,7 @@ const FormItem = Form.Item;
   submiting: loading.effects['article/saveOrUpdateArticle'],
 }))
 @Form.create()
-export default class extends React.Component {
+export default class ArticleEdit extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({

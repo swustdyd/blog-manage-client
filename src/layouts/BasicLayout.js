@@ -89,11 +89,11 @@ enquireScreen(b => {
   isMobile = b;
 });
 
-@connect(({ user, global = {}, loading }) => ({
+@connect(({ user, global = {} }) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
+  // fetchingNotices: loading.effects['global/fetchNotices'],
+  // notices: global.notices,
 }))
 export default class BasicLayout extends React.PureComponent {
   static childContextTypes = {

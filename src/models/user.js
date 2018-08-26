@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, searchUsers, saveOrUpdateUser } from '../services/user';
+import { queryCurrent, searchUsers, saveOrUpdateUser } from '../services/user';
 
 export default {
   namespace: 'user',
@@ -10,13 +10,6 @@ export default {
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'saveList',
-        payload: response,
-      });
-    },
     *fetchCurrent({ resolve, reject }, { call, put }) {
       try {
         const response = yield call(queryCurrent);
@@ -80,15 +73,6 @@ export default {
       return {
         ...state,
         currentUser: action.payload || {},
-      };
-    },
-    changeNotifyCount(state, action) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload,
-        },
       };
     },
     hideModal(state) {
