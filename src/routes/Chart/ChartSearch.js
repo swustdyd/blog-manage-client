@@ -7,6 +7,7 @@ import {
   Radio, 
   Form, 
   Row, 
+  Col,
   Button, 
   Tabs, 
   Table, 
@@ -16,7 +17,7 @@ import {
 import moment from 'moment'
 import Echarts from '../../components/Echarts'
 
-// import styles from './ChartSearch.less'
+import styles from './ChartSearch.less'
 
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group
@@ -158,15 +159,27 @@ export default class ChartSearch extends React.Component{
 
   renderCharts = (chart) => {
     if(chart.script){
-      try {        
+      try {   
+        const colLayout = {
+          xs: 24,
+          sm: 24,
+          md: 24,
+          lg: 12,
+        };     
         const func = eval(`(${chart.script})`);
         const options = func(chart.listData);
         return options.map(option => {
-          return (            
-            <Echarts
-              key={option.title.text}
-              option={option}
-            />
+          return (          
+            <Col 
+              key={option.title.text} 
+              className={styles.chartContainer} 
+              {...colLayout}
+            >            
+              <Echarts
+                className={styles.chart}
+                option={option}
+              />
+            </Col>
           )
         })
       } catch (e) {

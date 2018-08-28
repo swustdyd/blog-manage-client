@@ -489,6 +489,7 @@ const scriptForChart = `function (list){
         trigger: 'axis',
       },
       legend: {
+        top: 'bottom',
         data: keys
       },
       toolbox: {
