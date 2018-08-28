@@ -35,8 +35,8 @@ export default class ChartEdit extends React.Component {
       },
     };
     const textAreaAutosize = { 
-      minRows: 2, 
-      maxRows: 6,
+      minRows: 1, 
+      maxRows: 20,
     }
     return (
       <Form onSubmit={this.handleSubmit}>
