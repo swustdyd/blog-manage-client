@@ -12,6 +12,7 @@ const menusToTree = (menus, basePath = '') => {
   const tree = [];
   menus.forEach(menu => {
     const node = {
+      ...menu,
       title: menu.name,
       key: `${basePath ? `${basePath}/` : ''}${menu.path}`,
       icon: menu.icon,
@@ -46,6 +47,7 @@ const selectedTreeToMenus = tree => {
       const childrenMenus = selectedTreeToMenus(node.children);
       if (childrenMenus.length > 0) {
         const menu = {
+          ...node,
           name: node.title,
           path: paths[paths.length - 1],
           icon: node.icon,
@@ -55,6 +57,7 @@ const selectedTreeToMenus = tree => {
       }
     } else if (node.selected) {
       menus.push({
+        ...node,
         name: node.title,
         path: paths[paths.length - 1],
         icon: node.icon,
