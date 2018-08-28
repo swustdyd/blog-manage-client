@@ -441,7 +441,133 @@ export const superAdminMenus = [
   },
 ];
 
-const types = ['input', 'select', 'radio', 'checkbox'];
+const types = ['input', 'select', 'radio', 'checkbox', 'datePicker', 'rangePicker'];
+const sqls = ['data1', 'data2', 'data3'];
+function getData1(num){
+  const data1 = [];
+  for (let i = 0; i < num; i += 1) {
+    data1.push({
+      '房租': 1200 + i * 20,
+      '水电费': 300 + i * 2,
+      '交通费': 200 + i * 2,
+      '伙食费': 900 + i * 5,
+      '日用品数': 300 + i * 5,
+      // '总费用': 2900 + i * 34, 
+    })
+  }
+  return data1;
+}
+export const getChartDatas = {
+  data1: getData1(12),
+  data2: getData1(12),
+  data3: getData1(12),
+}
+const scriptForChart = `function (list){
+  if(list && list.length){
+    const options = [];
+    const legends = ['一月', '二月', '三月', '四月','五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+    const keys = Object.keys(list[0]);
+    const series = [];
+    keys.forEach(key => {
+      const serie = {
+        name: key,
+        type: 'line',
+        stack: '总量',
+        areaStyle: {normal: {}},
+        data: [],
+      };
+      list.forEach(row => {
+        serie.data.push(row[key]);
+      })
+      series.push(serie);
+    })
+    options.push({
+      title: {
+        text: '深圳一年最低生活费趋势（单位：元）'
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: keys
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {},
+        },
+      },
+      xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: legends.slice(0, list.length),
+      },
+      yAxis: {
+          type: 'value',
+      },
+      series,
+    })
+
+    // 一月份
+    const pieSeriesData = [];
+    keys.forEach(key => {
+      pieSeriesData.push({
+        name: key,
+        value: list[0][key],
+      })
+    })
+    options.push({
+      title: {
+        text: '深圳一月份最低生活费组成（单位：元）'
+      },
+      tooltip: {
+          trigger: 'item',
+          formatter: "{a} <br/>{b}: {c} ({d}%)"
+      },
+      legend: {
+          top: 'middle',
+          orient: 'vertical',
+          x: 'left',
+          data: keys 
+      },
+      series: [
+          {
+              name:'消费类型',
+              type:'pie',
+              radius: ['50%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                  normal: {
+                      show: false,
+                      position: 'center'
+                  },
+                  emphasis: {
+                      show: true,
+                      textStyle: {
+                          fontSize: '30',
+                          fontWeight: 'bold'
+                      }
+                  }
+              },
+              labelLine: {
+                  normal: {
+                      show: false
+                  }
+              },
+              data: pieSeriesData
+          }
+      ]
+  })
+    return options;
+  }else{
+    throw new Error('数据不能为空');
+  }
+}`
+
+const scripts = {
+  data1: scriptForChart,
+  data2: scriptForChart,
+  data3: scriptForChart,
+};
 const getValues = (num) => {
   const values = [];
   for (let i = 0; i < num; i += 1) {
@@ -462,9 +588,13 @@ const chartSearchItemTemplate = {
 
 export const getCharts = renderTemplate(3, chartSearchItemTemplate, (template, index) => {
   const id = index + 1;
+  const sql = sqls[Math.floor(Math.random() * sqls.length)];
+  const script = scripts[sql];
   return {
     ...template,
     id,
+    sql,
+    script: script.toString(),
     name: `报表${id}`,
     where: renderTemplate(3, {}, (templateSub, indexSub) => {
       const type = types[Math.floor(Math.random() * types.length)];
@@ -479,6 +609,8 @@ export const getCharts = renderTemplate(3, chartSearchItemTemplate, (template, i
     }),
   }
 });
+
+
 
 export default {
   getNotice,

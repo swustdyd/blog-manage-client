@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { searchCharts, saveOrUpdateChart } from '../services/api';
+import { searchCharts, saveOrUpdateChart, getChartDatas } from '../services/api';
 
 export default {
   namespace: 'chart',
@@ -16,6 +16,14 @@ export default {
       yield put({
         type: 'saveList',
         payload: response.result.list,
+      });
+    },
+    *getChartDatas({ payload }, {select, call, put }) {
+      const response = yield call(getChartDatas, payload);
+      const currentChart = yield select(state => state.chart.currentChart);
+      yield put({
+        type: 'setCurrentChart',
+        payload: {...currentChart, listData: response.result.list},
       });
     },
     *saveOrUpdateChart({ payload, resolve, reject }, { call, put }) {

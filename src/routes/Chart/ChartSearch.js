@@ -1,6 +1,20 @@
 import React from 'react'
 import {connect} from 'dva'
-import {Input, Select, Checkbox, Radio, Form, Row, Button, Tabs } from 'antd'
+import {
+  Input, 
+  Select, 
+  Checkbox, 
+  Radio, 
+  Form, 
+  Row, 
+  Button, 
+  Tabs, 
+  Table, 
+  message,
+  DatePicker,
+} from 'antd'
+import moment from 'moment'
+import Echarts from '../../components/Echarts'
 
 import styles from './ChartSearch.less'
 
@@ -9,13 +23,34 @@ const CheckboxGroup = Checkbox.Group
 const {Option} = Select;
 const FormItem = Form.Item;
 const {TabPane} = Tabs;
+const { RangePicker } = DatePicker;
 
 @connect(({chart, loading}) => ({
   chart,
-  searching: loading.effects['chart/searchCharts'],
+  searching: loading.effects['chart/getChartDatas'],
 }))
 @Form.create()
 export default class ChartSearch extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+      currentTagKey: '1',
+    }
+  }
+
+  componentDidMount(){
+    const {dispatch, chart: {currentChart = {}}} = this.props;
+    const {sql}= currentChart;
+    if(sql){
+      dispatch({
+        type: 'chart/getChartDatas',
+        payload: {
+          sql,
+        },
+      })
+    }
+  }
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -25,6 +60,34 @@ export default class ChartSearch extends React.Component{
         console.log(values);
       }
     })
+  }
+
+  handleTagChange = (key) => {
+    this.setState({
+      currentTagKey: key,
+    })
+  }
+
+  renderDatePicker = (item) => {
+    const {dateFormat, showTime} = item;
+    return (
+      <DatePicker 
+        showTime={showTime}
+        defaultValue={moment(Date.now(), dateFormat)} 
+        format={dateFormat}
+      />
+    )
+  }
+
+  renderRangePicker = (item) => {
+    const {dateFormat, showTime} = item;
+    return (
+      <RangePicker 
+        showTime={showTime}
+        defaultValue={[moment(Date.now(), dateFormat)]} 
+        format={dateFormat}
+      />
+    )
   }
 
   renderInput = () => {
@@ -82,7 +145,7 @@ export default class ChartSearch extends React.Component{
     };
     const {form: {getFieldDecorator}} = this.props;
     return where.map(item => {
-      const method = `render${item.type.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())}`;
+      const method = `render${item.type.replace(/( |^)[a-z]/g, (L) => L.toUpperCase())}`;
       return (
         <FormItem key={item.key} {...formItemLayout} label={item.label}>
           {getFieldDecorator(item.key)(
@@ -93,8 +156,45 @@ export default class ChartSearch extends React.Component{
     })
   }
 
+  renderCharts = (chart) => {
+    if(chart.script){
+      try {        
+        const func = eval(`(${chart.script})`);
+        const options = func(chart.listData);
+        return options.map(option => {
+          return (            
+            <Echarts
+              key={option.title.text}
+              option={option}
+            />
+          )
+        })
+      } catch (e) {
+        console.log(e);
+        message.error(e.message);
+      }
+    }
+  }
+
   render(){
+    const {currentTagKey} = this.state;
     const {chart: {currentChart = {}}} = this.props;
+    const {listData} = currentChart;
+    const columns = [];
+    const hasData = currentChart.listData && currentChart.listData.length > 0
+    if(hasData){
+      const dataDemo = currentChart.listData[0];
+      for (const key in dataDemo) {
+        if (Object.prototype.hasOwnProperty.call(dataDemo, key)) {                    
+            // const element = dataDemo[key];
+            columns.push({
+              title: key,
+              key,
+              dataIndex: key,
+            }) 
+        }
+      }
+    }
     return(
       <div className={styles.container}>
         <h2>{currentChart.name}</h2>
@@ -108,9 +208,20 @@ export default class ChartSearch extends React.Component{
             </FormItem>
           </Row>          
         </Form>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="列表" key="1">列表</TabPane>
-          <TabPane tab="图表" key="2">图表</TabPane>
+        <Tabs onChange={this.handleTagChange} activeKey={currentTagKey}>
+          <TabPane tab="列表" key="1">
+            {hasData ? (            
+              <Table 
+                rowKey={columns[0].dataIndex}
+                dataSource={listData}
+                columns={columns}
+                pagination={false}
+              />
+            ) : '暂无数据'}
+          </TabPane>
+          <TabPane tab="图表" key="2">
+            {hasData && currentTagKey === '2' ? this.renderCharts(currentChart) : '暂无数据'}
+          </TabPane>
         </Tabs>
       </div>
     )

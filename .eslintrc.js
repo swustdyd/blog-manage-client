@@ -10,6 +10,7 @@ module.exports = {
     jasmine: true,
   },
   rules: {
+    'no-eval': [0],
     'linebreak-style': [0, 'windows'], //换行风格
     'generator-star-spacing': [0],
     'consistent-return': [0],

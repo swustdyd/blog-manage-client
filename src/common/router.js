@@ -131,7 +131,6 @@ export function getRouterData(app, menus = []) {
     // eg.  router /user/:id === /user/chen
     const pathRegexp = pathToRegexp(path);
     const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
-    console.log(menuKey)
     let menuItem = {};
     // If menuKey is not empty
     if (

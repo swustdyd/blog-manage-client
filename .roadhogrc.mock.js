@@ -9,6 +9,7 @@ import {
   adminMenus,
   superAdminMenus,
   getCharts,
+  getChartDatas,
 } from './mock/api';
 import { getFakeChartData } from './mock/chart';
 import { getProfileBasicData } from './mock/profile';
@@ -312,6 +313,16 @@ const proxy = {
       result: {
         ...chart,
         id: 1,
+      },
+    });
+  },
+  'GET /api/getChartDatas': (req, res) => {
+    const { sql } = req.query;
+    res.send({
+      ok: sql ? true : false,
+      message: getChartDatas[sql] ? '' : '不存在该类型数据',
+      result: {
+        list: getChartDatas[sql],
       },
     });
   },

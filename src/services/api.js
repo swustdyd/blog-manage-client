@@ -52,6 +52,10 @@ export async function searchCharts(params) {
   return request(`/api/searchCharts?${stringify(params)}`);
 }
 
+export async function getChartDatas(params) {
+  return request(`/api/getChartDatas?${stringify(params)}`);
+}
+
 export async function saveOrUpdateChart(params) {
   return request('/api/saveOrUpdateChart', {
     method: 'POST',
