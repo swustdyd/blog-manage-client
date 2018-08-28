@@ -121,7 +121,7 @@ export default class Setting extends React.Component {
     return (
       <div className={styles.container}>
         <Table
-          className={styles.table}
+          className="search-result-container"
           rowKey="id"
           columns={columns}
           loading={searching}

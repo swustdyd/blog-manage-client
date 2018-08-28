@@ -1,3 +1,5 @@
+@import '~antd/lib/style/themes/default.less';
+
 .container{
     position: relative;
     .tagContainer{
@@ -14,7 +16,7 @@
         right: 0;
         top: 0;
         span{
-            color: #1890ff;
+            color: @primary-color;
             cursor: pointer;
         }
     }
@@ -33,6 +35,6 @@
     }
     .tagSelected{
         color: #fff;
-        background-color: #1890ff;
+        background-color: @primary-color;
     }
 }

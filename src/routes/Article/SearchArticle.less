@@ -1,36 +1,26 @@
-.searchForm,
-.listContainer{
-    background-color: #fff;
-    padding: 25px;
+@import '~antd/lib/style/themes/default.less';
+
+.itemCardAction{
+  font-size: 20px !important;
 }
-.formActionContainer{
-    text-align: right;
+.itemCardActionEdit{
+  color: @primary-color;
 }
-.listContainer{
-    margin-top: 25px;
-    .itemCardAction{
-        font-size: 20px !important;
-    }
-    .itemCardActionEdit{
-        color: #1890ff;
-    }
-    .itemCardActionDelete{
-        color: red;
-    }
-    .itemContent{
-        color: #333;
-    }
-    .cardTagsContainer{
-        margin-top: 10px;
-        .cardTag{
-            margin-top: 10px;
-        }
-    }
-    .loadMoreContainer{
-        text-align: center;
-        color: #333;
-        
-    }
+.itemCardActionDelete{
+  color: @error-color;
+}
+.itemContent{
+  color: #333;
+}
+.cardTagsContainer{
+  margin-top: 10px;
+  .cardTag{
+      margin-top: 10px;
+  }
+}
+.loadMoreContainer{
+  text-align: center;
+  color: #333;  
 }
 
 .newArticleBtn{

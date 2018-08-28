@@ -190,7 +190,7 @@ export default class SearchArticle extends React.Component {
     };
     return (
       <div>
-        <Form className={styles.searchForm} onSubmit={this.handleSearch}>
+        <Form className="search-form-container" onSubmit={this.handleSearch}>
           <StandardFormRow title={<span>&emsp;关键词</span>}>
             <FormItem>
               {getFieldDecorator('searchKeyWord')(<Input placeholder="输入搜索的关键词..." />)}
@@ -230,7 +230,7 @@ export default class SearchArticle extends React.Component {
               </Col>
             </Row>
           </StandardFormRow>
-          <Row className={styles.formActionContainer}>
+          <Row className="search-form-action-container">
             <Button
               className={styles.newArticleBtn}
               type="primary"
@@ -266,7 +266,7 @@ export default class SearchArticle extends React.Component {
             sm: 2,
             md: 3,
           }}
-          className={styles.listContainer}
+          className="search-result-container"
           loading={searching}
           itemLayout="vertical"
           loadMore={loadMore}

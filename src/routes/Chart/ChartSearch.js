@@ -16,7 +16,7 @@ import {
 import moment from 'moment'
 import Echarts from '../../components/Echarts'
 
-import styles from './ChartSearch.less'
+// import styles from './ChartSearch.less'
 
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group
@@ -73,7 +73,7 @@ export default class ChartSearch extends React.Component{
     return (
       <DatePicker 
         showTime={showTime}
-        defaultValue={moment(Date.now(), dateFormat)} 
+        // defaultValue={moment(Date.now(), dateFormat)} 
         format={dateFormat}
       />
     )
@@ -84,7 +84,7 @@ export default class ChartSearch extends React.Component{
     return (
       <RangePicker 
         showTime={showTime}
-        defaultValue={[moment(Date.now(), dateFormat)]} 
+        // defaultValue={[moment(Date.now(), dateFormat)]} 
         format={dateFormat}
       />
     )
@@ -196,19 +196,17 @@ export default class ChartSearch extends React.Component{
       }
     }
     return(
-      <div className={styles.container}>
+      <div>
         <h2>{currentChart.name}</h2>
-        <Form onSubmit={this.handleSubmit}>
+        <Form className="search-form-container" onSubmit={this.handleSubmit}>
           <Row>
             {this.renderSearchWhere(currentChart.where)}
           </Row>
-          <Row>
-            <FormItem>
-              <Button type="primary" htmlType="submit">搜索</Button>         
-            </FormItem>
+          <Row className="search-form-action-container">
+            <Button type="primary" htmlType="submit">搜索</Button>   
           </Row>          
         </Form>
-        <Tabs onChange={this.handleTagChange} activeKey={currentTagKey}>
+        <Tabs className="search-result-container" onChange={this.handleTagChange} activeKey={currentTagKey}>
           <TabPane tab="列表" key="1">
             {hasData ? (            
               <Table 

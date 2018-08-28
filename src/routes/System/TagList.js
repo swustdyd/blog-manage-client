@@ -163,7 +163,7 @@ export default class TagList extends React.Component {
     };
     return (
       <div>
-        <Form className={styles.formContainer} onSubmit={e => this.handleSearch(e)}>
+        <Form className="search-form-container" onSubmit={e => this.handleSearch(e)}>
           <Row {...wrapperLayout.row}>
             <Col {...wrapperLayout.col}>
               <FormItem {...formItemLayout} label="标签名">
@@ -192,7 +192,7 @@ export default class TagList extends React.Component {
         <Table
           rowKey="id"
           loading={searching}
-          className={styles.tableContainer}
+          className="search-result-container"
           columns={columns}
           dataSource={data}
           pagination={pagination}

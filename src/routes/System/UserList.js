@@ -90,9 +90,9 @@ export default class UserList extends React.Component {
       },
     ];
     return (
-      <div className={styles.container}>
+      <div>
         <Table
-          className={styles.table}
+          className="search-result-container"
           rowKey="id"
           columns={columns}
           loading={searching}

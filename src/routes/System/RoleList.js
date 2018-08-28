@@ -85,25 +85,25 @@ export default class List extends React.Component {
         title: '名称',
         dataIndex: 'name',
         render: (name, record) => (
-            <a
-              onClick={() => {
-                this.setState({
-                  modalSetting: {
-                    title: `编辑角色：“${name}”`,
-                  },
-                  modalContent: (
-                      <RoleEdit
-                        defaultRole={record}
-                      />
-                  ),
-                });
-                dispatch({
-                  type: 'role/showModal',
-                });
-              }}
-            >
-                {name}
-            </a>
+          <a
+            onClick={() => {
+              this.setState({
+                modalSetting: {
+                  title: `编辑角色：“${name}”`,
+                },
+                modalContent: (
+                  <RoleEdit
+                    defaultRole={record}
+                  />
+                ),
+              });
+              dispatch({
+                type: 'role/showModal',
+              });
+            }}
+          >
+            {name}
+          </a>
         ),
       },
       {
@@ -123,45 +123,45 @@ export default class List extends React.Component {
       {
         dataIndex: 'id',
         render: (id, record) => (
-            <Popconfirm
-              title={`是否删除“${record.name}”`}
-              okText="是"
-              cancelText="否"
-              onConfirm={() => this.handleDeleteRole(record)}
-            >
-                <Icon className={styles.deleteIcon} type="delete" />
-            </Popconfirm>
+          <Popconfirm
+            title={`是否删除“${record.name}”`}
+            okText="是"
+            cancelText="否"
+            onConfirm={() => this.handleDeleteRole(record)}
+          >
+            <Icon className={styles.deleteIcon} type="delete" />
+          </Popconfirm>
         ),
       },
     ];
     return (
-        <div className={styles.container}>
-            <Button type="primary" onClick={() => this.handleNewRole()}>
-              新增角色
-            </Button>
-            <Table
-              className={styles.table}
-              rowKey="id"
-              columns={columns}
-              loading={searching}
-              dataSource={list}
-              pagination={pagination}
-            />
-            <Modal
-              destroyOnClose
-              visible={showModal}
-              maskClosable={false}
-              footer={null}
-              {...modalSetting}
-              onCancel={() => {
-                dispatch({
-                  type: 'role/hideModal',
-                });
-              }}
-            >
-                {modalContent}
-            </Modal>
-        </div>
+      <div className="search-result-container">
+        <Button style={{marginBottom: 25}} type="primary" onClick={() => this.handleNewRole()}>
+          新增角色
+        </Button>
+        <Table
+          className={styles.table}
+          rowKey="id"
+          columns={columns}
+          loading={searching}
+          dataSource={list}
+          pagination={pagination}
+        />
+        <Modal
+          destroyOnClose
+          visible={showModal}
+          maskClosable={false}
+          footer={null}
+          {...modalSetting}
+          onCancel={() => {
+            dispatch({
+              type: 'role/hideModal',
+            });
+          }}
+        >
+          {modalContent}
+        </Modal>
+      </div>
     );
   }
 }
