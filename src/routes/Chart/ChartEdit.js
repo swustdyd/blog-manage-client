@@ -34,6 +34,10 @@ export default class ChartEdit extends React.Component {
         md: { span: 20 },
       },
     };
+    const textAreaAutosize = { 
+      minRows: 2, 
+      maxRows: 6,
+    }
     return (
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label="报表名称">
@@ -55,8 +59,8 @@ export default class ChartEdit extends React.Component {
                 message: '报表SQL不能为空',
               },
             ],
-            initialValue: defaultChart.name,
-          })(<TextArea placeholder="请填入报表SQL..." />)}
+            initialValue: defaultChart.sql,
+          })(<TextArea autosize={textAreaAutosize} placeholder="请填入报表SQL..." />)}
         </FormItem>
         <FormItem {...formItemLayout} label="报表Script">
           {getFieldDecorator('script', {
@@ -66,8 +70,19 @@ export default class ChartEdit extends React.Component {
                 message: '报表Script不能为空',
               },
             ],
-            initialValue: defaultChart.name,
-          })(<TextArea placeholder="请填入报表Script..." />)}
+            initialValue: defaultChart.script,
+          })(<TextArea autosize={textAreaAutosize} placeholder="请填入报表Script..." />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="报表Where">
+          {getFieldDecorator('where', {
+            rules: [
+              {
+                required: true,
+                message: '报表Where不能为空',
+              },
+            ],
+            initialValue: JSON.stringify(defaultChart.where || []),
+          })(<TextArea autosize={textAreaAutosize} placeholder="请填入报表Wheree..." />)}
         </FormItem>
         <div className={styles.submiContainer}>
           <Button type="primary" htmlType="submit">

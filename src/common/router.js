@@ -90,6 +90,9 @@ export function getRouterData(app, menus = []) {
     '/chart/setting': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/Setting')),
     },
+    '/chart/search': {
+      component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/ChartSearch')),
+    },
     '/exception/403': {
       component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
     },
@@ -128,6 +131,7 @@ export function getRouterData(app, menus = []) {
     // eg.  router /user/:id === /user/chen
     const pathRegexp = pathToRegexp(path);
     const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
+    console.log(menuKey)
     let menuItem = {};
     // If menuKey is not empty
     if (

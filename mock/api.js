@@ -441,16 +441,43 @@ export const superAdminMenus = [
   },
 ];
 
-const chartTempalte = {
-  sql: 'test sql',
-  script: 'test script',
-  createAt: '2018-10-25 12:56:30',
-  updateAt: '2018-10-25 12:56:30',
+const types = ['input', 'select', 'radio', 'checkbox'];
+const getValues = (num) => {
+  const values = [];
+  for (let i = 0; i < num; i += 1) {
+    values.push({
+      value: i + 1,
+      label: `选项${i + 1}`,
+    })      
+  }
+  return values;
 };
 
-export const getCharts = renderTemplate(10, chartTempalte, (template, index) => {
+const chartSearchItemTemplate = {
+  name: '报表',
+  sql: 'test sql',
+  script: 'test script',
+  where: [],
+};
+
+export const getCharts = renderTemplate(3, chartSearchItemTemplate, (template, index) => {
   const id = index + 1;
-  return { ...template, id, name: `报表${id}` };
+  return {
+    ...template,
+    id,
+    name: `报表${id}`,
+    where: renderTemplate(3, {}, (templateSub, indexSub) => {
+      const type = types[Math.floor(Math.random() * types.length)];
+      const idSub = indexSub + 1;
+      return {       
+        type,
+        key: `key${idSub}`,
+        label: `搜索项${idSub}`,
+        datas: type === 'input' ? `默认输入${idSub}...` : getValues(3),
+        value: null,
+      }
+    }),
+  }
 });
 
 export default {

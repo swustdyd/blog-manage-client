@@ -1,3 +1,4 @@
+import { routerRedux } from 'dva/router';
 import { searchCharts, saveOrUpdateChart } from '../services/api';
 
 export default {
@@ -6,6 +7,7 @@ export default {
   state: {
     list: [],
     showModal: false,
+    currentChart: {},
   },
 
   effects: {
@@ -35,6 +37,14 @@ export default {
         }
       }
     },
+    *viewChartSearch({payload}, {put}){      
+      const {chart} = payload;
+      yield put({
+        type: 'setCurrentChart',
+        payload: chart,
+      });
+      yield put(routerRedux.push('/chart/search'));
+    },
   },
 
   reducers: {
@@ -43,6 +53,12 @@ export default {
         ...state,
         list: action.payload,
       };
+    },
+    setCurrentChart(state, action){
+      return{
+        ...state,
+        currentChart: action.payload,
+      }
     },
     hideModal(state) {
       return {

@@ -55,6 +55,11 @@ export const menuData = [
         name: '报表设置',
         path: 'setting',
       },
+      {
+        name: '报表搜索页',
+        path: 'search',
+        hideInMenu: true,
+      },
     ],
   },
 ];

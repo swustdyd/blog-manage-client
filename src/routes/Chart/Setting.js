@@ -59,14 +59,18 @@ export default class Setting extends React.Component {
           <Tooltip title="查看报表">
             <Icon
               onClick={() => {
-                this.setState({
-                  modalSetting: {
-                    title: `编辑报表：“${record.name}”`,
-                  },
-                  modalContent: <ChartEdit defaultChart={record} />,
-                });
+                // this.setState({
+                //   modalSetting: {
+                //     title: `查看报表：“${record.name}”`,
+                //     width: 800,
+                //   },
+                //   modalContent: <ChartSearch defaultChart={record} />,
+                // });
                 dispatch({
-                  type: 'chart/showModal',
+                  type: 'chart/viewChartSearch',
+                  payload: {
+                    chart: record,
+                  },
                 });
               }}
               className={styles.editIcon}
@@ -84,6 +88,7 @@ export default class Setting extends React.Component {
                 this.setState({
                   modalSetting: {
                     title: `编辑报表：“${record.name}”`,
+                    width: 800,
                   },
                   modalContent: <ChartEdit defaultChart={record} />,
                 });
