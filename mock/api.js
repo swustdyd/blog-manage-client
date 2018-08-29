@@ -517,6 +517,7 @@ const scriptForChart = `function (list){
       })
     })
     options.push({
+      watermarker: true,
       title: {
         text: '深圳一月份最低生活费组成（单位：元）'
       },
@@ -536,6 +537,7 @@ const scriptForChart = `function (list){
               type:'pie',
               radius: ['50%', '70%'],
               avoidLabelOverlap: false,
+              stack: 'chart',
               label: {
                   normal: {
                       show: false,
