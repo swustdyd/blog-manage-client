@@ -49,7 +49,7 @@ export default {
       }
     },
     *logout(_, { put }) {
-      localStorage.removeItem('user-menus');
+      localStorage.clear();
       yield put({
         type: 'changeLoginStatus',
         payload: {
