@@ -122,14 +122,15 @@ export default class BasicLayout extends React.PureComponent {
 
   componentDidMount() {
     const { dispatch, app } = this.props;
-    new Promise((resolve, reject) => {
-      dispatch({
-        type: 'user/fetchCurrent',
-        resolve,
-        reject,
-      });
-    })
-      .then(() => {
+    const token = localStorage.getItem('token');
+    if(token){
+      new Promise((resolve, reject) => {
+        dispatch({
+          type: 'user/fetchCurrent',
+          resolve,
+          reject,
+        });
+      }).then(() => {
         getMenuData().then(menuData => {
           if (!menuData || menuData.length < 1) {
             window.location.href = getQueryPath('/#/common/login', {
@@ -154,29 +155,11 @@ export default class BasicLayout extends React.PureComponent {
       .catch(e => {
         message.error(e.message);
       });
-    // getMenuData().then(menuData => {
-    //   if(!menuData || menuData.length < 1){
-    //     window.location.href = getQueryPath('/#/common/login', {
-    //       redirect: window.location.href,
-    //     })
-    //   }else{
-    //     const formatMenuData = formatter(menuData);
-    //     formatMenuData.forEach(getRedirect)
-    //     const routerData = getRouterData(app, formatMenuData);
-    //     this.setState({
-    //       menuData: formatMenuData,
-    //       routerData,
-    //     })
-    //     this.enquireHandler = enquireScreen(mobile => {
-    //       this.setState({
-    //         isMobile: mobile,
-    //       });
-    //     });
-    //     dispatch({
-    //       type: 'user/fetchCurrent',
-    //     });
-    //   }
-    // })
+    }else{
+      window.location.href = getQueryPath('/#/common/login', {
+        redirect: window.location.href,
+      });
+    }
   }
 
   componentWillUnmount() {
