@@ -90,9 +90,12 @@ export function getRouterData(app, menus = []) {
     '/system/menu': {
       component: dynamicWrapper(app, ['menu'], () => import('../routes/System/MenuList')),
     },
+    '/system/mockApi': {
+      component: dynamicWrapper(app, [], () => import('../components/MockApi')),
+    },
     '/chart/setting': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/Setting')),
-    },
+    },  
     '/chart/view': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/ChartSearch')),
     },
@@ -121,7 +124,7 @@ export function getRouterData(app, menus = []) {
     },
     '/common/register-result': {
       component: dynamicWrapper(app, [], () => import('../routes/Common/RegisterResult')),
-    },
+    },  
   };
   // Get name from ./menu.js or just set it in the router data.
   const menuData = getFlatMenuData(menus);
