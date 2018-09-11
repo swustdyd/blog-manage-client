@@ -4,6 +4,7 @@ import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import { Link } from 'dva/router';
+import {CLIENTHOST, CLIENTPORT} from '../../../config'
 // import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
@@ -110,10 +111,9 @@ export default class GlobalHeader extends PureComponent {
               console.log('enter', value); // eslint-disable-line
             }}
           /> */}
-          <Tooltip title="使用文档">
+          <Tooltip title="Mock API 浏览">
             <a
-              target="_blank"
-              href="http://pro.ant.design/docs/getting-started"
+              href={`${CLIENTHOST}:${CLIENTPORT}/#/system/mockApi`}
               rel="noopener noreferrer"
               className={styles.action}
             >
