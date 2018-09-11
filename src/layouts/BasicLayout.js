@@ -15,8 +15,9 @@ import NotFound from '../routes/Exception/404';
 import { getRoutes, getQueryPath } from '../utils/utils';
 import Authorized from '../utils/Authorized';
 import logo from '../assets/logo.svg';
-import { getMenuData, formatter } from '../common/menu';
+import { formatter } from '../common/menu';
 import { getRouterData } from '../common/router';
+import { createTreeMenusfromFlatMenus  } from '../utils/menu';
 
 const { Content, Header, Footer } = Layout;
 const { check } = Authorized;
@@ -92,6 +93,7 @@ enquireScreen(b => {
 @connect(({ user, global = {} }) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
+  menuData: user.menus,
   // fetchingNotices: loading.effects['global/fetchNotices'],
   // notices: global.notices,
 }))
@@ -130,27 +132,25 @@ export default class BasicLayout extends React.PureComponent {
           resolve,
           reject,
         });
-      }).then(() => {
-        getMenuData().then(menuData => {
-          if (!menuData || menuData.length < 1) {
-            window.location.href = getQueryPath('/#/common/login', {
-              redirect: window.location.href,
-            });
-          } else {
-            const formatMenuData = formatter(menuData);
-            formatMenuData.forEach(getRedirect);
-            const routerData = getRouterData(app, formatMenuData);
+      }).then(res => {
+        const {menus: flatMenus} = res.result;
+        if (!flatMenus || flatMenus.length < 1) {
+          message.error("用户没有访问权限");
+        } else {
+          const menuData = createTreeMenusfromFlatMenus(flatMenus);
+          const formatMenuData = formatter(menuData);
+          formatMenuData.forEach(getRedirect);
+          const routerData = getRouterData(app, formatMenuData);
+          this.setState({
+            menuData: formatMenuData,
+            routerData,
+          });
+          this.enquireHandler = enquireScreen(mobile => {
             this.setState({
-              menuData: formatMenuData,
-              routerData,
+              isMobile: mobile,
             });
-            this.enquireHandler = enquireScreen(mobile => {
-              this.setState({
-                isMobile: mobile,
-              });
-            });
-          }
-        });
+          });
+        }
       })
       .catch(e => {
         message.error(e.message);
@@ -263,7 +263,7 @@ export default class BasicLayout extends React.PureComponent {
       <Layout>
         <SiderMenu
           logo={logo}
-          title="Blog Manage"
+          title="报表系统"
           menuData={menuData}
           collapsed={collapsed}
           location={location}

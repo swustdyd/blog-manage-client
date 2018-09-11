@@ -6,7 +6,6 @@ import {
   Radio, 
   Form, 
   Row, 
-  Col,
   Button, 
   Tabs, 
   Table, 
@@ -154,27 +153,16 @@ export default class ChartView extends React.Component{
 
   renderCharts = (chart) => {
     if(chart.script){
-      try {   
-        const colLayout = {
-          xs: 24,
-          sm: 24,
-          md: 24,
-          lg: 12,
-        };     
+      try {     
         const func = eval(`(${chart.script})`);
         const options = func(chart.listData);
         return options.map(option => {
           return (          
-            <Col 
-              key={option.title.text} 
-              className={styles.chartContainer} 
-              {...colLayout}
-            >            
-              <Echarts
-                className={styles.chart}
-                option={option}
-              />
-            </Col>
+            <Echarts
+              key={chart.name || 'nokey'}
+              className={styles.chart}
+              option={option}
+            />
           )
         })
       } catch (e) {

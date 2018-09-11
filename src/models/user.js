@@ -1,4 +1,4 @@
-import { queryCurrent, searchUsers, saveOrUpdateUser } from '../services/user';
+import { getCurrentUser, searchUsers, saveOrUpdateUser } from '../api/user';
 
 export default {
   namespace: 'user',
@@ -12,12 +12,9 @@ export default {
   effects: {
     *fetchCurrent({ resolve, reject }, { call, put }) {
       try {
-        const response = yield call(queryCurrent);
+        const response = yield call(getCurrentUser);
         if (response.ok) {
-          const { menus, user } = response.result;
-          if (menus) {
-            localStorage.setItem('user-menus', response.result.menus);
-          }
+          const { user } = response.result;
           if (resolve) {
             resolve(response);
           }

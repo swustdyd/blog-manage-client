@@ -1,83 +1,18 @@
 import React from 'react';
-import { Form, Button, Input, Icon, Tree, message } from 'antd';
+import { Form, Button, Input, Icon, Tree, message, Spin } from 'antd';
 import { connect } from 'dva';
-import { menuData } from '../../common/menu';
+import {
+  treeMenusToTree, 
+  selectedTreeToTreeMenus, 
+  createTreeMenusfromFlatMenus, 
+  getCheckedKeyFromTreeMenus,
+  createFlatMenusFromTreeMenus,
+} from '../../utils/menu'
 
 import styles from './RoleEdit.less';
 
 const FormItem = Form.Item;
 const { TreeNode } = Tree;
-
-const menusToTree = (menus, basePath = '') => {
-  const tree = [];
-  menus.forEach(menu => {
-    const node = {
-      ...menu,
-      title: menu.name,
-      key: `${basePath ? `${basePath}/` : ''}${menu.path}`,
-      icon: menu.icon,
-    };
-    if (menu.children && menu.children.length > 0) {
-      node.children = menusToTree(menu.children, menu.path);
-    }
-    tree.push(node);
-  });
-  return tree;
-};
-
-const treeData = menusToTree(menuData);
-
-const selectedTreeToMenus = tree => {
-  const menus = [];
-  tree.forEach(node => {
-    // if (node.selected) {
-    //   const paths = node.key.split('/');
-    //   const menu = {
-    //     name: node.title,
-    //     path: paths[paths.length - 1],
-    //     icon: node.icon,
-    //   };
-    //   if (node.children && node.children.length > 0) {
-    //     menu.children = selectedTreeToMenus(node.children);
-    //   }
-    //   menus.push(menu);
-    // }
-    const paths = node.key.split('/');
-    if (node.children && node.children.length > 0) {
-      const childrenMenus = selectedTreeToMenus(node.children);
-      if (childrenMenus.length > 0) {
-        const menu = {
-          ...node,
-          name: node.title,
-          path: paths[paths.length - 1],
-          icon: node.icon,
-          children: childrenMenus,
-        };
-        menus.push(menu);
-      }
-    } else if (node.selected) {
-      menus.push({
-        ...node,
-        name: node.title,
-        path: paths[paths.length - 1],
-        icon: node.icon,
-      });
-    }
-  });
-  return menus;
-};
-
-const getCheckedKeyFromMenus = (menus = [], basePath) => {
-  const checkedKeys = [];
-  menus.forEach(menu => {
-    if (menu.children && menu.children.length > 0) {
-      checkedKeys.push(...getCheckedKeyFromMenus(menu.children, menu.path));
-    } else {
-      checkedKeys.push(`${basePath ? `${basePath}/` : ''}${menu.path}`);
-    }
-  });
-  return checkedKeys;
-};
 
 @connect(({ role, loading }) => ({
   role,
@@ -87,16 +22,53 @@ const getCheckedKeyFromMenus = (menus = [], basePath) => {
 export default class RoleEdit extends React.Component {
   constructor(props) {
     super(props);
-    let checkedKeys = [];
-    if (props.defaultRole) {
-      checkedKeys = getCheckedKeyFromMenus(JSON.parse(props.defaultRole.menus));
-    }
     this.state = {
       expandedKeys: [],
       autoExpandParent: true,
-      checkedKeys,
+      checkedKeys: [],
       selectedKeys: [],
+      treeData: [],
     };
+  }
+
+  componentDidMount(){
+    const {dispatch, defaultRole} = this.props;
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: 'menu/searchMenus',
+        payload: {
+          roleId: defaultRole.id || -1,
+        },
+        resolve,
+        reject,
+      })
+    }).then(res =>{
+      const {list} = res.result;
+      const treeMenu = createTreeMenusfromFlatMenus(list);
+      const checkedKeys = getCheckedKeyFromTreeMenus(treeMenu);
+      this.setState({
+        checkedKeys,
+      })
+    }).catch(err => {
+      message.error(err.message);
+    })
+    
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: 'menu/getAllMenus',
+        resolve,
+        reject,
+      })
+    }).then(res =>{
+      const {list} = res.result;
+      const treeMenu = createTreeMenusfromFlatMenus(list);
+      const treeData = treeMenusToTree(treeMenu);
+      this.setState({
+        treeData,
+      })
+    }).catch(err => {
+      message.error(err.message);
+    })
   }
 
   onExpand = expandedKeys => {
@@ -138,8 +110,8 @@ export default class RoleEdit extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { form, dispatch, defaultRole = {} } = this.props;
-    const { checkedKeys, halfCheckedKeys } = this.state;
+    const { form, dispatch, defaultRole } = this.props;
+    const { checkedKeys, halfCheckedKeys, treeData} = this.state;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const role = values;
@@ -147,26 +119,33 @@ export default class RoleEdit extends React.Component {
         checkedKeys.concat(halfCheckedKeys).forEach(key => {
           newTreeData = this.setSelectTree(newTreeData, key);
         });
-        role.menus = selectedTreeToMenus(newTreeData);
+        const selectedMenus = selectedTreeToTreeMenus(newTreeData);
+        let roleAndMenus = createFlatMenusFromTreeMenus(selectedMenus);
+        roleAndMenus = roleAndMenus.map(menuItem => {
+          return {
+            menuId: menuItem.id,
+            roleId: defaultRole.id,
+          }
+        })
         new Promise((resolve, reject) => {
           dispatch({
             type: 'role/saveOrUpdateRole',
             payload: {
               role: { ...defaultRole, ...role },
+              roleAndMenus,
             },
             resolve,
             reject,
           });
-        })
-          .then(res => {
-            message.success(res.message);
-            dispatch({
-              type: 'role/searchRoles',
-            });
-          })
-          .catch(e => {
-            message.error(e.message);
+        }).then(res => {
+          message.success(res.message);
+          dispatch({
+            type: 'role/searchRoles',
           });
+        })
+        .catch(e => {
+          message.error(e.message);
+        });
       }
     });
   }
@@ -190,16 +169,14 @@ export default class RoleEdit extends React.Component {
       submiting,
       form: { getFieldDecorator },
     } = this.props;
-    const { expandedKeys, autoExpandParent, checkedKeys, selectedKeys } = this.state;
+    const { expandedKeys, autoExpandParent, checkedKeys, selectedKeys, treeData } = this.state;
+    const loadedTreeData = treeData && treeData.length > 0;
     const formItemLayout = {
       labelCol: {
-        xs: { span: 4 },
-        sm: { span: 4 },
+        span: 4,
       },
       wrapperCol: {
-        xs: { span: 20 },
-        sm: { span: 20 },
-        md: { span: 20 },
+        span: 20,
       },
     };
     return (
@@ -230,19 +207,23 @@ export default class RoleEdit extends React.Component {
             initialValue: defaultRole.typeName,
           })(<Input placeholder="请填入类型名称..." />)}
         </FormItem>
-        <FormItem {...formItemLayout} label="权限">
-          <Tree
-            checkable
-            onExpand={this.onExpand}
-            expandedKeys={expandedKeys}
-            autoExpandParent={autoExpandParent}
-            onCheck={this.onCheck}
-            checkedKeys={checkedKeys}
-            onSelect={this.onSelect}
-            selectedKeys={selectedKeys}
-          >
-            {this.renderTreeNodes(treeData)}
-          </Tree>
+        <FormItem {...formItemLayout} label="导航菜单">
+          <Spin spinning={!loadedTreeData}>
+            {loadedTreeData ? (
+              <Tree
+                checkable
+                onExpand={this.onExpand}
+                expandedKeys={expandedKeys}
+                autoExpandParent={autoExpandParent}
+                onCheck={this.onCheck}
+                checkedKeys={checkedKeys}
+                onSelect={this.onSelect}
+                selectedKeys={selectedKeys}
+              >
+                {this.renderTreeNodes(treeData)}
+              </Tree>
+            ) : ''}
+          </Spin>          
         </FormItem>
         <FormItem className={styles.submitContainer}>
           <Button type="primary" htmlType="submit">
@@ -259,4 +240,8 @@ export default class RoleEdit extends React.Component {
       </Form>
     );
   }
+}
+
+RoleEdit.defaultProps = {
+  defaultRole: {},
 }

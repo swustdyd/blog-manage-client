@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { register } from '../services/api';
+import { register } from '../api/user';
 
 export default {
   namespace: 'register',

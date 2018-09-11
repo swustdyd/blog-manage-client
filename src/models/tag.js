@@ -1,4 +1,4 @@
-import { searchTags, saveOrUpdateTag } from '../services/api';
+import { searchTags, saveOrUpdateTag } from '../api';
 
 export default {
   namespace: 'tag',

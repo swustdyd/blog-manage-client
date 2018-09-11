@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { message } from 'antd';
-import { accountLogin } from '../services/api';
+import { accountLogin } from '../api/user';
 import { getPageQuery } from '../utils/utils';
 
 export default {

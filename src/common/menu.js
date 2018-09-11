@@ -2,7 +2,7 @@ import { isUrl } from '../utils/utils';
 
 export const menuData = [
   {
-    name: '文章管理',
+    name: '操作日志',
     icon: 'file-text',
     path: 'article',
     children: [

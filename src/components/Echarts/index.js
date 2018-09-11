@@ -1,5 +1,8 @@
 import React from 'react'
+import { Col } from 'antd'
 import ReactEcharts from 'echarts-for-react'
+
+import styles from './index.less'
 
 export default class Echarts extends React.Component{
 
@@ -28,6 +31,20 @@ export default class Echarts extends React.Component{
   render(){
     const {option} = this.props;
     this.setWatermakerOption(option);
-    return <ReactEcharts {...this.props} />
+    const {style, wrapperLayout} = option;
+    const colLayout = wrapperLayout || {
+      xs: 24,
+      sm: 24,
+      md: 24,
+      lg: 12,
+    };
+    return (
+      <Col
+        className={styles.chartContainer} 
+        {...colLayout}
+      >
+        <ReactEcharts style={style} {...this.props} onEvents={option.events} />
+      </Col>
+    )
   }
 }

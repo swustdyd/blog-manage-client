@@ -1,0 +1,29 @@
+@import '~antd/lib/style/themes/default.less';
+@collapseContainerWidth: 50px;
+.container{
+  position: relative;
+}
+.container:not(:last-child){
+  border-bottom: @border-color-base @border-width-base @border-style-base; 
+}
+.actionContainer{
+  position: absolute;
+  right: 0;
+}
+.actionIcon{
+  font-size: 18px;
+}
+.actionIcon:not(:last-child){
+  margin-right: 10px;
+}
+.actionIcon:hover{
+  cursor: pointer;
+  color: @primary-color;
+}
+.actionIconDisable{
+  color: @disabled-color;
+}
+.actionIconDisable:hover{
+  cursor: not-allowed;
+  color: @disabled-color;
+}

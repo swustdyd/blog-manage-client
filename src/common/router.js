@@ -84,13 +84,16 @@ export function getRouterData(app, menus = []) {
     '/system/role': {
       component: dynamicWrapper(app, ['role'], () => import('../routes/System/RoleList')),
     },
-    '/system/user-list': {
+    '/system/userList': {
       component: dynamicWrapper(app, ['user'], () => import('../routes/System/UserList')),
+    },
+    '/system/menu': {
+      component: dynamicWrapper(app, ['menu'], () => import('../routes/System/MenuList')),
     },
     '/chart/setting': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/Setting')),
     },
-    '/chart/search': {
+    '/chart/view': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/ChartSearch')),
     },
     '/exception/403': {

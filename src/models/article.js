@@ -1,4 +1,4 @@
-import { searchArticle, saveOrUpdateArticle } from '../services/api';
+import { searchArticle, saveOrUpdateArticle } from '../api';
 
 export default {
   namespace: 'article',

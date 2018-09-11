@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { searchCharts, saveOrUpdateChart, getChartDatas } from '../services/api';
+import { searchCharts, saveOrUpdateChart, getChartDatas } from '../api';
 
 export default {
   namespace: 'chart',
@@ -51,7 +51,7 @@ export default {
         type: 'setCurrentChart',
         payload: chart,
       });
-      yield put(routerRedux.push('/chart/search'));
+      yield put(routerRedux.push('/chart/view'));
     },
   },
 

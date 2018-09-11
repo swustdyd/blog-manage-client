@@ -1,4 +1,4 @@
-import { searchRoles, saveOrUpdateRole } from '../services/api';
+import { searchRoles, saveOrUpdateRole } from '../api';
 
 export default {
   namespace: 'role',
