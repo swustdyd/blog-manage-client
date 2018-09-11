@@ -1,5 +1,4 @@
-export const HOST = 'http://10.130.196.85';
-export const PORT = 3001;
+import { HOST, PORT } from '../../config';
 
 export const Urls = {
   GET_CURRENT_USER: 'fetchCurrent',
@@ -29,15 +28,15 @@ export const Urls = {
   GET_ALL_MENUS: 'getAllMenus',
   SAVE_OR_UPDATE_MENU: 'saveOrUpdateMenu',
   GET_ALL_ROUTES: 'getAllRoutes',
-}
+};
 
 for (const key in Urls) {
   if (Object.hasOwnProperty.call(Urls, key)) {
     const url = Urls[key];
-    if(url.unRebuild){
+    if (url.unRebuild) {
       Urls[key] = Urls[key].path;
-    }else{
-      Urls[key] = `${HOST}:${PORT}/${url}`
+    } else {
+      Urls[key] = `${HOST}:${PORT}/${url}`;
     }
   }
 }
