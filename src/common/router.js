@@ -90,9 +90,6 @@ export function getRouterData(app, menus = []) {
     '/system/menu': {
       component: dynamicWrapper(app, ['menu'], () => import('../routes/System/MenuList')),
     },
-    '/system/mockApi': {
-      component: dynamicWrapper(app, [], () => import('../components/MockApi')),
-    },
     '/chart/setting': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Chart/Setting')),
     },  
@@ -112,6 +109,9 @@ export function getRouterData(app, menus = []) {
       component: dynamicWrapper(app, ['error'], () =>
         import('../routes/Exception/triggerException')
       ),
+    },
+    '/other/mockApi': {
+      component: dynamicWrapper(app, [], () => import('../components/MockApi')),
     },
     '/common': {
       component: dynamicWrapper(app, [], () => import('../layouts/CommonLayout')),

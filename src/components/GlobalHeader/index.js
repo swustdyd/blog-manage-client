@@ -113,7 +113,7 @@ export default class GlobalHeader extends PureComponent {
           /> */}
           <Tooltip title="Mock API 浏览">
             <a
-              href={`${CLIENTHOST}:${CLIENTPORT}/#/system/mockApi`}
+              href={`${CLIENTHOST}:${CLIENTPORT}/#/other/mockApi`}
               rel="noopener noreferrer"
               className={styles.action}
             >
