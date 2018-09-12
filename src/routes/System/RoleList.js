@@ -48,6 +48,7 @@ export default class List extends React.Component {
     this.setState({
       modalSetting: {
         title: '新增角色',
+        width: 600,
       },
       modalContent: <RoleEdit />,
     });
@@ -90,6 +91,7 @@ export default class List extends React.Component {
               this.setState({
                 modalSetting: {
                   title: `编辑角色：“${name}”`,
+                  width: 600,
                 },
                 modalContent: (
                   <RoleEdit

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Input, Icon, Tree, message, Spin } from 'antd';
+import { Form, Button, Input, Icon, Tree, message, Spin, Transfer, Tooltip } from 'antd';
 import { connect } from 'dva';
 import {
   treeMenusToTree, 
@@ -8,11 +8,23 @@ import {
   getCheckedKeyFromTreeMenus,
   createFlatMenusFromTreeMenus,
 } from '../../utils/menu'
+import {HOST, PORT} from '../../../config'
 
 import styles from './RoleEdit.less';
 
 const FormItem = Form.Item;
 const { TreeNode } = Tree;
+
+const rebuildRoutes = (routes = []) => {
+  return routes.map(route => {
+    return {
+      key: route.path,
+      title: route.name,
+      description: route.description,
+      tip: `${route.method.toUpperCase()} ${HOST}:${PORT}${route.path}`,
+    }
+  })
+}
 
 @connect(({ role, loading }) => ({
   role,
@@ -28,6 +40,9 @@ export default class RoleEdit extends React.Component {
       checkedKeys: [],
       selectedKeys: [],
       treeData: [],
+      defaultRoutes: [],
+      targetKeys: [],
+      transferSelectKeys: [],
     };
   }
 
@@ -65,6 +80,21 @@ export default class RoleEdit extends React.Component {
       const treeData = treeMenusToTree(treeMenu);
       this.setState({
         treeData,
+      })
+    }).catch(err => {
+      message.error(err.message);
+    })
+
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: 'api/getAllRoutes',
+        resolve,
+        reject,
+      })
+    }).then(res =>{
+      const {list} = res.result;
+      this.setState({
+        defaultRoutes: rebuildRoutes(list),
       })
     }).catch(err => {
       message.error(err.message);
@@ -107,6 +137,22 @@ export default class RoleEdit extends React.Component {
       }
     });
   };
+
+  handleTransferSearch = (inputValue, option) => {
+    return option.title.indexOf(inputValue) > -1;
+  }
+
+  handleTransferSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    this.setState({
+      transferSelectKeys: [...sourceSelectedKeys, ...targetSelectedKeys],
+    })
+  }
+
+  handleTransferChange = (targetKeys) => {
+    this.setState({
+      targetKeys,
+    })
+  }
 
   handleSubmit(event) {
     event.preventDefault();
@@ -169,7 +215,16 @@ export default class RoleEdit extends React.Component {
       submiting,
       form: { getFieldDecorator },
     } = this.props;
-    const { expandedKeys, autoExpandParent, checkedKeys, selectedKeys, treeData } = this.state;
+    const { 
+      expandedKeys, 
+      autoExpandParent, 
+      checkedKeys, 
+      selectedKeys, 
+      treeData,
+      defaultRoutes,
+      targetKeys,
+      transferSelectKeys,
+    } = this.state;
     const loadedTreeData = treeData && treeData.length > 0;
     const formItemLayout = {
       labelCol: {
@@ -209,23 +264,44 @@ export default class RoleEdit extends React.Component {
         </FormItem>
         <FormItem {...formItemLayout} label="导航菜单">
           <Spin spinning={!loadedTreeData}>
-            {loadedTreeData ? (
-              <Tree
-                checkable
-                onExpand={this.onExpand}
-                expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
-                onCheck={this.onCheck}
-                checkedKeys={checkedKeys}
-                onSelect={this.onSelect}
-                selectedKeys={selectedKeys}
-              >
-                {this.renderTreeNodes(treeData)}
-              </Tree>
-            ) : ''}
+            <div className={styles.menuContainer}>
+              {loadedTreeData ? (
+                <Tree
+                  checkable
+                  onExpand={this.onExpand}
+                  expandedKeys={expandedKeys}
+                  autoExpandParent={autoExpandParent}
+                  onCheck={this.onCheck}
+                  checkedKeys={checkedKeys}
+                  onSelect={this.onSelect}
+                  selectedKeys={selectedKeys}
+                >
+                  {this.renderTreeNodes(treeData)}
+                </Tree>
+              ) : ''}
+            </div>            
           </Spin>          
         </FormItem>
-        <FormItem className={styles.submitContainer}>
+        <FormItem {...formItemLayout} label="Server Api">
+          <Transfer
+            showSearch
+            titles={['未选', '已选']}
+            targetKeys={targetKeys}
+            selectedKeys={transferSelectKeys}
+            filterOption={this.handleTransferSearch}
+            onChange={this.handleTransferChange}
+            onSelectChange={this.handleTransferSelectChange}
+            className={styles.transfer}
+            listStyle={{height: 300, width: 205}}
+            dataSource={defaultRoutes}
+            render={item => (
+              <Tooltip title={item.tip}>
+                {item.title}
+              </Tooltip>
+            )}
+          />
+        </FormItem>
+        <div className={styles.submitContainer}>
           <Button type="primary" htmlType="submit">
             {submiting ? (
               <span>
@@ -236,7 +312,7 @@ export default class RoleEdit extends React.Component {
               '提交'
             )}
           </Button>
-        </FormItem>
+        </div>
       </Form>
     );
   }

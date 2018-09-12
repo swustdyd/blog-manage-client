@@ -295,7 +295,6 @@ export default class RoleEdit extends React.Component {
             {loadedTreeData ? (
               <TreeSelect
                 allowClear
-                treeDefaultExpandAll
                 defaultValue={defaultMenu.parentMenu <= 0 ? '' : `${defaultMenu.parentMenu}`}
                 treeData={treeData}
                 placeholder="请选择父级菜单..."
