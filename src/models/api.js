@@ -1,7 +1,7 @@
-import { } from '../api/user';
+import { getAllRoutes } from '../api';
 
 export default {
-  namespace: 'menu',
+  namespace: 'api',
 
   state: {
     list: [],
@@ -9,18 +9,19 @@ export default {
   },
 
   effects: {
-    *getAllMenus({ resolve, reject }, { call, put }) {
+    *getAllRoutes({ resolve, reject }, { call, put }) {
       try {
-        const response = yield call(queryCurrent);
+        const response = yield call(getAllRoutes);
         if (response.ok) {
           const { list } = response.result;
           if (resolve) {
             resolve(response);
+          }else{
+            yield put({
+              type: 'saveList',
+              payload: list,
+            });
           }
-          yield put({
-            type: 'saveList',
-            payload: list,
-          });
         } else if (reject) {
           reject(response);
         }
