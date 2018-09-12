@@ -28,6 +28,7 @@
     "bizcharts-plugin-slider": "^2.0.1",
     "braft-editor": "^1.9.8",
     "classnames": "^2.2.5",
+    "copy-to-clipboard": "^3.0.8",
     "dva": "^2.2.3",
     "dva-loading": "^2.0.3",
     "echarts": "^4.1.0",
