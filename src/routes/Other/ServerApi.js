@@ -146,6 +146,13 @@ export default class ServerApi extends React.Component{
     })
   }
 
+  handleSelectSearch = (inputValue, option) => {
+    const {defaultRoutes} = this.state;
+    const {key} = option;
+    const datas = defaultRoutes.filter(item => item.path === key);
+    return key.toUpperCase().indexOf(inputValue.toUpperCase()) > -1 || datas[0].name.indexOf(inputValue) > -1;
+  }
+
   renderSelectOption = (routes = []) => {
     return routes.map(route => {
       const finalPath = `${HOST}:${PORT}${route.path}`;
@@ -171,6 +178,7 @@ export default class ServerApi extends React.Component{
             className={styles.apiSelect} 
             placeholder="选择或者输入要查看的Server Api..."
             onChange={this.handleSelectChange}
+            filterOption={this.handleSelectSearch}
           >
             {this.renderSelectOption(defaultRoutes)}
           </Select>
