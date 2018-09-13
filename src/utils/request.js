@@ -37,7 +37,7 @@ function checkStatus(response) {
 
 function checkResponse(res){
   const {errorCode, message, ok} = res;
-  if(!ok && errorCode === 500){
+  if(!ok && errorCode !== 100 ){
     notification.error({
       message,
     });
@@ -93,7 +93,7 @@ export default function request(url, options) {
     .catch(e => {
       const { dispatch } = store;
       const status = e.name;
-      if (String(status).indexOf('401') !== -1) {
+      if (String(status).indexOf('401.1') !== -1) {
         dispatch({
           type: 'login/logout',
         });
