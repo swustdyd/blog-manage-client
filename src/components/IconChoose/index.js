@@ -31,12 +31,14 @@ export default class IconChoose extends React.Component{
     const {onChange, type} = this.props;
     if(onChange){
       if(type === 'radio'){
+        let selectKey = '';
         for (const key in choose) {
           if (Object.hasOwnProperty.call(choose, key) && choose[key]) {
-            onChange(key)
-            return;            
+            selectKey = key;
+            break;            
           }
         }
+        onChange(selectKey)
       }else{
         const seletedKeys = [];
         for (const key in choose) {
@@ -84,7 +86,7 @@ export default class IconChoose extends React.Component{
         className += ` ${styles.iconChoose}`
       }
       return (
-        <Tooltip title={type}>
+        <Tooltip key={type} title={type}>
           <Icon onClick={() => this.handleIconClick(type)} key={type} className={className} type={type} />
         </Tooltip>        
       )
