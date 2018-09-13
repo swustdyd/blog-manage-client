@@ -31,12 +31,25 @@ export default {
         }
       }
     },
-    *searchUsers({ payload }, { call, put }) {
-      const response = yield call(searchUsers, payload);
-      yield put({
-        type: 'saveList',
-        payload: response.result.list,
-      });
+    *searchUsers({ payload, resolve, reject }, { call, put }) {
+      try {
+        const response = yield call(searchUsers, payload);
+        if (response.ok) {
+          if (resolve) {
+            resolve(response);
+          }
+          yield put({
+            type: 'saveList',
+            payload: response.result.list,
+          });
+        } else if (reject) {
+          reject(response);
+        }
+      } catch (e) {
+        if (reject) {
+          reject(e);
+        }
+      }
     },
     *saveOrUpdateUser({ payload, resolve, reject }, { call, put }) {
       try {
