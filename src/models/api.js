@@ -1,4 +1,4 @@
-import { getAllRoutes } from '../api';
+import { getAllRoutes, searchRoutes } from '../api';
 
 export default {
   namespace: 'api',
@@ -12,6 +12,28 @@ export default {
     *getAllRoutes({ resolve, reject }, { call, put }) {
       try {
         const response = yield call(getAllRoutes);
+        if (response.ok) {
+          const { list } = response.result;
+          if (resolve) {
+            resolve(response);
+          }else{
+            yield put({
+              type: 'saveList',
+              payload: list,
+            });
+          }
+        } else if (reject) {
+          reject(response);
+        }
+      } catch (e) {
+        if (reject) {
+          reject(e);
+        }
+      }
+    },
+    *searchRoutes({ payload, resolve, reject }, { call, put }) {
+      try {
+        const response = yield call(searchRoutes, payload);
         if (response.ok) {
           const { list } = response.result;
           if (resolve) {

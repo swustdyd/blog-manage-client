@@ -25,6 +25,7 @@ class ApiItem extends React.Component{
         functionName,
         controller,
         params,
+        status,
       },
     } = this.props;
     const columns = [
@@ -50,12 +51,22 @@ class ApiItem extends React.Component{
       },
     ]
     const finalPath = `${HOST}:${PORT}${path}`;
+    const finalParams = JSON.parse(params);
     return(
       <Card
-        className={styles.apiItem}
+        className={`${styles.apiItem}${status ? '' : ` ${styles.apiItemDisabled}`}`}
         title={(
           <div>
-            <p className={styles.name}>{`${name} ( ${controller}.${functionName} )`}</p>
+            <p>
+              <span className={styles.name}>
+                {`${name} ( ${controller}.${functionName} )`}
+              </span>
+              {status ? '' : (
+                <span className={styles.error}>
+                  &emsp;已失效
+                </span>
+              )}
+            </p>
             <p>
               <span className={styles.method}>{method.toUpperCase()}</span>
               &emsp;
@@ -74,9 +85,10 @@ class ApiItem extends React.Component{
         <h3>Params</h3>
         <div>
           <Table 
+            rowKey="name"
             size="small"
             columns={columns}
-            dataSource={params}
+            dataSource={finalParams}
             pagination={false}
           />
         </div>
@@ -93,7 +105,7 @@ ApiItem.defaultProps = {
     description: '',
     fuction: '',
     controller: '',
-    params: [],
+    params: '[]',
   },
 }
 

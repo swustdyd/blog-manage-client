@@ -27,7 +27,8 @@ export const Urls = {
   SEARCH_MENUS: 'searchMenus',
   GET_ALL_MENUS: 'getAllMenus',
   SAVE_OR_UPDATE_MENU: 'saveOrUpdateMenu',
-  GET_ALL_ROUTES: 'getAllRoutes',
+  GET_ALL_ROUTES: 'getAllApis',
+  SEARCH_ROUTES: 'searchRoutes',
 };
 
 for (const key in Urls) {

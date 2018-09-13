@@ -18,10 +18,12 @@ const { TreeNode } = Tree;
 const rebuildRoutes = (routes = []) => {
   return routes.map(route => {
     return {
+      ...route,
       key: route.path,
       title: route.name,
       description: route.description,
-      tip: `${route.method.toUpperCase()} ${HOST}:${PORT}${route.path}`,
+      tip: `${route.status ? `${route.method.toUpperCase()} ${HOST}:${PORT}${route.path}` : '已失效 '}`,
+      disabled: !route.status,
     }
   })
 }
@@ -42,7 +44,7 @@ export default class RoleEdit extends React.Component {
       treeData: [],
       defaultRoutes: [],
       targetKeys: [],
-      transferSelectKeys: [],
+      // transferSelectKeys: [],
     };
   }
 
@@ -52,7 +54,7 @@ export default class RoleEdit extends React.Component {
       dispatch({
         type: 'menu/searchMenus',
         payload: {
-          roleId: defaultRole.id || -1,
+          roleId: defaultRole.id,
         },
         resolve,
         reject,
@@ -95,6 +97,25 @@ export default class RoleEdit extends React.Component {
       const {list} = res.result;
       this.setState({
         defaultRoutes: rebuildRoutes(list),
+      })
+    }).catch(err => {
+      message.error(err.message);
+    })
+
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: 'api/searchRoutes',
+        payload: {
+          roleId: defaultRole.id,
+        },
+        resolve,
+        reject,
+      })
+    }).then(res =>{
+      const {list = []} = res.result;
+      
+      this.setState({
+        targetKeys: list.map(route => route.path),
       })
     }).catch(err => {
       message.error(err.message);
@@ -142,11 +163,11 @@ export default class RoleEdit extends React.Component {
     return option.title.indexOf(inputValue) > -1;
   }
 
-  handleTransferSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    this.setState({
-      transferSelectKeys: [...sourceSelectedKeys, ...targetSelectedKeys],
-    })
-  }
+  // handleTransferSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+  //   this.setState({
+  //     transferSelectKeys: [...sourceSelectedKeys, ...targetSelectedKeys],
+  //   })
+  // }
 
   handleTransferChange = (targetKeys) => {
     this.setState({
@@ -157,7 +178,7 @@ export default class RoleEdit extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const { form, dispatch, defaultRole } = this.props;
-    const { checkedKeys, halfCheckedKeys, treeData} = this.state;
+    const { checkedKeys, halfCheckedKeys, treeData, targetKeys, defaultRoutes} = this.state;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const role = values;
@@ -173,12 +194,25 @@ export default class RoleEdit extends React.Component {
             roleId: defaultRole.id,
           }
         })
+        const targetKeysString = targetKeys.join('');
+        let roleAndApis = defaultRoutes.map(route => {
+          if(targetKeysString.indexOf(route.path) > -1){
+            return {
+              apiId: route.id,
+              roleId: defaultRole.id,
+            }
+          }else{
+            return undefined;
+          }
+        })
+        roleAndApis = roleAndApis.filter(item => item !== undefined)
         new Promise((resolve, reject) => {
           dispatch({
             type: 'role/saveOrUpdateRole',
             payload: {
               role: { ...defaultRole, ...role },
               roleAndMenus,
+              roleAndApis,
             },
             resolve,
             reject,
@@ -223,7 +257,7 @@ export default class RoleEdit extends React.Component {
       treeData,
       defaultRoutes,
       targetKeys,
-      transferSelectKeys,
+      // transferSelectKeys,
     } = this.state;
     const loadedTreeData = treeData && treeData.length > 0;
     const formItemLayout = {
@@ -287,10 +321,10 @@ export default class RoleEdit extends React.Component {
             showSearch
             titles={['未选', '已选']}
             targetKeys={targetKeys}
-            selectedKeys={transferSelectKeys}
+            // selectedKeys={transferSelectKeys}
             filterOption={this.handleTransferSearch}
             onChange={this.handleTransferChange}
-            onSelectChange={this.handleTransferSelectChange}
+            // onSelectChange={this.handleTransferSelectChange}
             className={styles.transfer}
             listStyle={{height: 300, width: 205}}
             dataSource={defaultRoutes}
@@ -319,5 +353,7 @@ export default class RoleEdit extends React.Component {
 }
 
 RoleEdit.defaultProps = {
-  defaultRole: {},
+  defaultRole: {
+    id: -1,
+  },
 }

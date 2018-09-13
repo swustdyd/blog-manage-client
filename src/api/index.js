@@ -68,3 +68,7 @@ export async function saveOrUpdateMenu(params) {
 export async function getAllRoutes() {
   return request(Urls.GET_ALL_ROUTES);
 }
+
+export async function searchRoutes(params) {
+  return request(`${Urls.SEARCH_ROUTES}?${stringify(params)}`)
+}
