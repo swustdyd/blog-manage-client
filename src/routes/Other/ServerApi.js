@@ -170,7 +170,15 @@ export default class ServerApi extends React.Component{
   renderAnchorLink = (routes = []) => {
     return routes.map(route => {
       return (
-        <Anchor.Link key={route.path} href={`/#${route.path}`} title={route.name} />
+        <Anchor.Link 
+          key={route.path} 
+          href={`/#${route.path}`} 
+          title={(
+            <span className={route.status ? '' : styles.anchorLinkDisable}>
+              {route.name}
+            </span>
+          )} 
+        />
       )
     })
   }
