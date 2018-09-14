@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Icon, message } from 'antd';
+import { Layout, Icon, message, BackTop, Tooltip} from 'antd';
 import DocumentTitle from 'react-document-title';
 import { connect } from 'dva';
 import { Route, Redirect, Switch, routerRedux } from 'dva/router';
@@ -18,6 +18,8 @@ import logo from '../assets/logo.svg';
 import { formatter } from '../common/menu';
 import { getRouterData } from '../common/router';
 import { createTreeMenusfromFlatMenus  } from '../utils/menu';
+
+import styles from './BasicLayout.less'
 
 const { Content, Header, Footer } = Layout;
 const { check } = Authorized;
@@ -259,6 +261,7 @@ export default class BasicLayout extends React.PureComponent {
     const { isMobile: mb } = this.state;
     const { routerData, menuData } = this.state;
     const baseRedirect = this.getBaseRedirect();
+    const {breadcrumbNameMap} = this.getChildContext();
     const layout = (
       <Layout>
         <SiderMenu
@@ -277,6 +280,8 @@ export default class BasicLayout extends React.PureComponent {
               currentUser={currentUser}
               // fetchingNotices={fetchingNotices}
               // notices={notices}
+              location={location}
+              breadcrumbNameMap={breadcrumbNameMap}
               collapsed={collapsed}
               isMobile={mb}
               onNoticeClear={this.handleNoticeClear}
@@ -308,7 +313,12 @@ export default class BasicLayout extends React.PureComponent {
                 </Fragment>
               }
             />
-          </Footer>
+          </Footer>          
+          <BackTop>
+            <Tooltip title="回到顶部">            
+              <Icon className={styles.backTopIcon} type="arrow-up" />
+            </Tooltip>
+          </BackTop>
         </Layout>
       </Layout>
     );
