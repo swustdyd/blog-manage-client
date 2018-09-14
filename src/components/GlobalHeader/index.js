@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip } from 'antd';
+import { Menu, Icon, Spin, Tag, Dropdown, Avatar, Divider, Tooltip, Breadcrumb} from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import { Link } from 'dva/router';
-import {CLIENTHOST, CLIENTPORT} from '../../../config'
+// import {CLIENTHOST, CLIENTPORT} from '../../../config'
 // import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
@@ -45,6 +45,18 @@ export default class GlobalHeader extends PureComponent {
     return groupBy(newNotices, 'type');
   }
 
+  getRouteMap(){
+    const {breadcrumbNameMap} =  this.props;
+    const routeMap = [];
+    for (const key in breadcrumbNameMap) {
+      if (Object.hasOwnProperty.call(breadcrumbNameMap, key)) {
+        const route = breadcrumbNameMap[key];
+        routeMap[key] = route.name;
+      }
+    }
+    return routeMap;
+  }
+
   toggle = () => {
     const { collapsed, onCollapse } = this.props;
     onCollapse(!collapsed);
@@ -57,6 +69,31 @@ export default class GlobalHeader extends PureComponent {
     event.initEvent('resize', true, false);
     window.dispatchEvent(event);
   }
+
+  renderBreadcrumbItem(breadcrumbNameMap){
+    const items = [];
+    items.push((
+      <Breadcrumb.Item key="home">
+        <Link to="/">首页</Link>
+      </Breadcrumb.Item>
+    ))
+
+    const {location} = this.props;
+    const pathSnippets = location.pathname.split('/').filter(i => i);
+    const extraBreadcrumbItems = pathSnippets.map((_, index) => {
+      const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+      return (
+        <Breadcrumb.Item key={url}>
+          <Link to={url}>
+            {breadcrumbNameMap[url]}
+          </Link>
+        </Breadcrumb.Item>
+      );
+    });
+
+    return items.concat(extraBreadcrumbItems);
+  }
+
   render() {
     const {
       currentUser = {},
@@ -67,16 +104,17 @@ export default class GlobalHeader extends PureComponent {
       onNoticeVisibleChange,
       onMenuClick,
       onNoticeClear,
+      location,
     } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="userDetail">
           <Icon type="user" />个人中心
         </Menu.Item>
-        {/* <Menu.Item disabled>
-          <Icon type="setting" />设置
-        </Menu.Item> */}
-        <Menu.Item key="triggerError">
+        <Menu.Item disabled >
+          <Icon type="setting" />系统设置
+        </Menu.Item>
+        <Menu.Item disabled key="triggerError">
           <Icon type="close-circle" />触发报错
         </Menu.Item>
         <Menu.Divider />
@@ -86,8 +124,12 @@ export default class GlobalHeader extends PureComponent {
       </Menu>
     );
     const noticeData = this.getNoticeData();
+    const routeMap = this.getRouteMap();
     return (
       <div className={styles.header}>
+        <Breadcrumb className={styles.breadcrumb}>
+          {this.renderBreadcrumbItem(routeMap)}
+        </Breadcrumb>
         {isMobile && [
           <Link to="/" className={styles.logo} key="logo">
             <img src={logo} alt="logo" width="32" />
@@ -111,7 +153,7 @@ export default class GlobalHeader extends PureComponent {
               console.log('enter', value); // eslint-disable-line
             }}
           /> */}
-          <Tooltip title="Mock API 浏览">
+          {/* <Tooltip title="Mock API 浏览">
             <a
               href={`${CLIENTHOST}:${CLIENTPORT}/#/other/mockApi`}
               rel="noopener noreferrer"
@@ -119,7 +161,7 @@ export default class GlobalHeader extends PureComponent {
             >
               <Icon type="question-circle-o" />
             </a>
-          </Tooltip>
+          </Tooltip> */}
           {/* <NoticeIcon
             className={styles.action}
             count={currentUser.notifyCount || 0}
@@ -153,7 +195,7 @@ export default class GlobalHeader extends PureComponent {
           {currentUser.name ? (
             <Dropdown overlay={menu}>
               <span className={`${styles.action} ${styles.account}`}>
-                <Avatar size="small" className={styles.avatar} src={currentUser.avatar} icon={currentUser.avatar ? '' : 'user'}/>
+                <Avatar className={styles.avatar} src={currentUser.avatar} icon={currentUser.avatar ? '' : 'user'}/>
                 <span className={styles.name}>{currentUser.name}</span>
               </span>
             </Dropdown>
