@@ -1,5 +1,5 @@
 import React from 'react'
-import {message, Card, Table, Icon, Tooltip, Select} from 'antd'
+import {message, Card, Table, Icon, Tooltip, Select, Anchor, Col} from 'antd'
 import copyToClipboard from 'copy-to-clipboard'
 import {getAllRoutes} from '../../api'
 import {HOST, PORT} from '../../../config'
@@ -27,6 +27,7 @@ class ApiItem extends React.Component{
         params,
         status,
       },
+      id,
     } = this.props;
     const columns = [
       {
@@ -54,6 +55,7 @@ class ApiItem extends React.Component{
     const finalParams = JSON.parse(params);
     return(
       <Card
+        id={id}
         className={`${styles.apiItem}${status ? '' : ` ${styles.apiItemDisabled}`}`}
         title={(
           <div>
@@ -165,6 +167,14 @@ export default class ServerApi extends React.Component{
     return key.toUpperCase().indexOf(inputValue.toUpperCase()) > -1 || datas[0].name.indexOf(inputValue) > -1;
   }
 
+  renderAnchorLink = (routes = []) => {
+    return routes.map(route => {
+      return (
+        <Anchor.Link key={route.path} href={`/#${route.path}`} title={route.name} />
+      )
+    })
+  }
+
   renderSelectOption = (routes = []) => {
     return routes.map(route => {
       const finalPath = `${HOST}:${PORT}${route.path}`;
@@ -182,23 +192,31 @@ export default class ServerApi extends React.Component{
     const {routes, defaultRoutes} = this.state;
     return(
       <div>
-        <div>
-          <Select 
-            allowClear
-            mode="multiple"
-            size="large" 
-            className={styles.apiSelect} 
-            placeholder="选择或者输入要查看的Server Api..."
-            onChange={this.handleSelectChange}
-            filterOption={this.handleSelectSearch}
-          >
-            {this.renderSelectOption(defaultRoutes)}
-          </Select>
-        </div>
-        {routes.map(item => {
-          // return <p>{JSON.stringify(item)}</p>
-          return <ApiItem key={item.path} api={item} />
-        })}
+        <Col style={{paddingRight: 20}} span={20}>
+          <div>
+            <Select 
+              allowClear
+              mode="multiple"
+              size="large" 
+              className={styles.apiSelect} 
+              placeholder="选择或者输入要查看的Server Api..."
+              onChange={this.handleSelectChange}
+              filterOption={this.handleSelectSearch}
+            >
+              {this.renderSelectOption(defaultRoutes)}
+            </Select>
+          </div>
+          {routes.map(item => {
+            // return <p>{JSON.stringify(item)}</p>
+            return <ApiItem id={item.path} key={item.path} api={item} />
+          })}
+        </Col>
+        <Col span={4}>
+          <Anchor>
+            {this.renderAnchorLink(defaultRoutes)}
+          </Anchor>
+        </Col>
+        
       </div>
     )
   }
