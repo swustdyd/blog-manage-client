@@ -10,6 +10,7 @@ import pathToRegexp from 'path-to-regexp';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
 import GlobalHeader from '../components/GlobalHeader';
 import GlobalFooter from '../components/GlobalFooter';
+import PageProgress from '../components/PageProgress';
 import SiderMenu from '../components/SiderMenu';
 import NotFound from '../routes/Exception/404';
 import { getRoutes, getQueryPath } from '../utils/utils';
@@ -330,7 +331,13 @@ export default class BasicLayout extends React.PureComponent {
     return (
       <DocumentTitle title={this.getPageTitle()}>
         <ContainerQuery query={query}>
-          {params => <div className={classNames(params)}>{layout}</div>}
+          {params => (
+            // eslint-disable-next-line
+            <div id="mainContainer" className={classNames(params)}>
+              <PageProgress targetId="mainContainer" className={styles.pageProgress} />
+              {layout}
+            </div>
+          )}
         </ContainerQuery>
       </DocumentTitle>
     );

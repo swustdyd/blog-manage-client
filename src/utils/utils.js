@@ -180,3 +180,15 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export function isUrl(path) {
   return reg.test(path);
 }
+
+export function getScrollTop(){
+  let scrollTop = 0;
+  if(document.documentElement && document.documentElement.scrollTop){
+    const {scrollTop: scrollTopElement} = document.documentElement;
+    scrollTop = scrollTopElement;
+  }else if(document.body){
+    const {scrollTop: scrollTopBody} = document.documentElement;
+    scrollTop = scrollTopBody;
+  }
+  return scrollTop;
+}
