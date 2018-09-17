@@ -3,6 +3,7 @@ import {
   getCharts,
   getChartDatas,
 } from './mock/chart';
+import {getNotices} from './mock/notices'
 import { format, delay } from 'roadhog-api-doc';
 
 // 是否禁用代理
@@ -103,6 +104,10 @@ const proxy = {
         },
       });
     },
+  },
+  'GET /api/queryNotices': {
+    $desc: '搜索当前用户的通知',
+    $body: getNotices
   }
 };
 

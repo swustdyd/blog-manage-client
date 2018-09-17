@@ -72,3 +72,7 @@ export async function getAllRoutes() {
 export async function searchRoutes(params) {
   return request(`${Urls.SEARCH_ROUTES}?${stringify(params)}`)
 }
+
+export async function queryNotices(params) {
+  return request(`${Urls.QUERY_NOTICES}?${stringify(params)}`)
+}

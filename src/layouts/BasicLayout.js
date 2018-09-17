@@ -92,12 +92,12 @@ enquireScreen(b => {
   isMobile = b;
 });
 
-@connect(({ user, global = {} }) => ({
+@connect(({ user, global = {}, loading}) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
   menuData: user.menus,
-  // fetchingNotices: loading.effects['global/fetchNotices'],
-  // notices: global.notices,
+  fetchingNotices: loading.effects['global/fetchNotices'],
+  notices: global.notices,
 }))
 export default class BasicLayout extends React.PureComponent {
   static childContextTypes = {
@@ -156,6 +156,10 @@ export default class BasicLayout extends React.PureComponent {
       })
       .catch(e => {
         message.error(e.message);
+      });
+
+      dispatch({
+        type: 'global/fetchNotices',
       });
     }else{
       window.location.href = getQueryPath('/#/common/login', {
@@ -253,8 +257,8 @@ export default class BasicLayout extends React.PureComponent {
     const {
       currentUser,
       collapsed,
-      // fetchingNotices,
-      // notices,
+      fetchingNotices,
+      notices,
       match,
       location,
     } = this.props;
@@ -278,8 +282,8 @@ export default class BasicLayout extends React.PureComponent {
             <GlobalHeader
               logo={logo}
               currentUser={currentUser}
-              // fetchingNotices={fetchingNotices}
-              // notices={notices}
+              fetchingNotices={fetchingNotices}
+              notices={notices}
               location={location}
               breadcrumbNameMap={breadcrumbNameMap}
               collapsed={collapsed}

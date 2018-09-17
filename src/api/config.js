@@ -29,6 +29,10 @@ export const Urls = {
   SAVE_OR_UPDATE_MENU: 'saveOrUpdateMenu',
   GET_ALL_ROUTES: 'getAllApis',
   SEARCH_ROUTES: 'searchRoutes',
+  QUERY_NOTICES: {
+    path: '/api/queryNotices',
+    unRebuild: true,
+  },
 };
 
 for (const key in Urls) {

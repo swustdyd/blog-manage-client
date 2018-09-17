@@ -97,5 +97,14 @@ export default {
         showModal: true,
       };
     },
+    changeNotifyCount(state, action) {
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          notifyCount: action.payload,
+        },
+      };
+    },
   },
 };

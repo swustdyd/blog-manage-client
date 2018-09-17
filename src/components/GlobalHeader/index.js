@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
 import { Link } from 'dva/router';
 // import {CLIENTHOST, CLIENTPORT} from '../../../config'
-// import NoticeIcon from '../NoticeIcon';
+import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
 export default class GlobalHeader extends PureComponent {
@@ -84,9 +84,10 @@ export default class GlobalHeader extends PureComponent {
       const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
       return (
         <Breadcrumb.Item key={url}>
-          <Link to={url}>
+          {/* <Link className={location.pathname === url ? styles.currentLink : ''} to={url}>
             {breadcrumbNameMap[url]}
-          </Link>
+          </Link> */}
+          {breadcrumbNameMap[url]}
         </Breadcrumb.Item>
       );
     });
@@ -162,9 +163,9 @@ export default class GlobalHeader extends PureComponent {
               <Icon type="question-circle-o" />
             </a>
           </Tooltip> */}
-          {/* <NoticeIcon
+          <NoticeIcon
             className={styles.action}
-            count={currentUser.notifyCount || 0}
+            count={currentUser.notifyCount}
             onItemClick={(item, tabProps) => {
               console.log(item, tabProps); // eslint-disable-line
             }}
@@ -191,7 +192,7 @@ export default class GlobalHeader extends PureComponent {
               emptyText="你已完成所有待办"
               emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
             />
-          </NoticeIcon> */}
+          </NoticeIcon>
           {currentUser.name ? (
             <Dropdown overlay={menu}>
               <span className={`${styles.action} ${styles.account}`}>
