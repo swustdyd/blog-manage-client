@@ -19,6 +19,7 @@ import logo from '../assets/logo.svg';
 import { formatter } from '../common/menu';
 import { getRouterData } from '../common/router';
 import { createTreeMenusfromFlatMenus  } from '../utils/menu';
+import {ROOT_ID} from '../../config'
 
 import styles from './BasicLayout.less'
 
@@ -329,8 +330,8 @@ export default class BasicLayout extends React.PureComponent {
           {params => (
             // eslint-disable-next-line
             <div className={classNames(params)}>
-              <PageProgress showInfo targetId="root" className={styles.pageProgress} />       
-              <BackTop target={() => document.getElementById('root')}>
+              <PageProgress showInfo targetId={ROOT_ID} className={styles.pageProgress} />       
+              <BackTop target={() => document.getElementById(ROOT_ID)}>
                 <Tooltip title="回到顶部">            
                   <Icon className={styles.backTopIcon} type="arrow-up" />
                 </Tooltip>
