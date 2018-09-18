@@ -318,12 +318,7 @@ export default class BasicLayout extends React.PureComponent {
                 </Fragment>
               }
             />
-          </Footer>          
-          <BackTop>
-            <Tooltip title="回到顶部">            
-              <Icon className={styles.backTopIcon} type="arrow-up" />
-            </Tooltip>
-          </BackTop>
+          </Footer>   
         </Layout>
       </Layout>
     );
@@ -333,8 +328,13 @@ export default class BasicLayout extends React.PureComponent {
         <ContainerQuery query={query}>
           {params => (
             // eslint-disable-next-line
-            <div id="mainContainer" className={classNames(params)}>
-              <PageProgress targetId="mainContainer" className={styles.pageProgress} />
+            <div className={classNames(params)}>
+              <PageProgress showInfo targetId="root" className={styles.pageProgress} />       
+              <BackTop target={() => document.getElementById('root')}>
+                <Tooltip title="回到顶部">            
+                  <Icon className={styles.backTopIcon} type="arrow-up" />
+                </Tooltip>
+              </BackTop>
               {layout}
             </div>
           )}

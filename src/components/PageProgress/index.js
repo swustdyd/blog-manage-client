@@ -1,6 +1,5 @@
 import React from 'react'
 import {Progress} from 'antd'
-import {getScrollTop} from '../../utils/utils'
 
 import styles from './index.less'
 
@@ -17,33 +16,44 @@ export default class PageProgress extends React.Component{
   componentDidMount(){
     const {targetId} = this.props;
     const target = document.getElementById(targetId);
-    window.onscroll = this.handleWindowScroll;
+    target.onscroll = this.handleWindowScroll;
     this.setState({
       target,
     })
   }
 
   handleWindowScroll = () => {
+    let percent = 0;
     const {target} = this.state;
-    const scrollTop = getScrollTop();
+    const {scrollTop} = target;
     const {scrollHeight: totalScrollHeight} = target;
     const {clientHeight} = document.body;
+    if(totalScrollHeight !== clientHeight){
+      percent = Math.round( scrollTop / (totalScrollHeight - clientHeight ) * 100);
+    }
     this.setState({
-      percent: Math.round((scrollTop + (scrollTop ? clientHeight : 0)) / totalScrollHeight * 100),
+      percent,
     })
   }
 
   render(){
-    const {className} = this.props;
+    const {className, showInfo} = this.props;
     const {percent} = this.state;
     return(
-      <Progress 
-        className={`${styles.progress} ${className}`}
-        showInfo={false}
-        strokeWidth={3}
-        percent={percent}
-        width={3}
-      />
+      <div className={`${styles.progress} ${className}`}>
+        <Progress
+          showInfo={false}
+          strokeWidth={3}
+          percent={percent}
+          width={3}
+          status="active"
+        />
+        {/* {showInfo ? (
+          <span className={styles.info}>
+            {percent}%
+          </span>
+        ) : ''} */}
+      </div>
     )
   }
 }

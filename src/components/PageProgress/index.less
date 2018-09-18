@@ -1,11 +1,20 @@
+@import '~antd/lib/style/themes/default.less';
+
 .progress{
   width: 100%;
   padding: 0;
   margin: 0;
+  line-height: 0;
   > div{
     line-height: 0;
     :global(.ant-progress-inner){
       background-color: transparent;
     }
+  }
+  .info{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: @primary-color;
   }
 }

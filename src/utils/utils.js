@@ -181,7 +181,7 @@ export function isUrl(path) {
   return reg.test(path);
 }
 
-export function getScrollTop(){
+export function getDocumentScrollTop(){
   let scrollTop = 0;
   if(document.documentElement && document.documentElement.scrollTop){
     const {scrollTop: scrollTopElement} = document.documentElement;
