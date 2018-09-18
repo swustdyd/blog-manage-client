@@ -2,7 +2,7 @@ import React from 'react'
 import {message, Card, Table, Icon, Tooltip, Select, Anchor, Col} from 'antd'
 import copyToClipboard from 'copy-to-clipboard'
 import {getAllRoutes} from '../../api'
-import {HOST, PORT} from '../../../config'
+import {HOST, PORT, ROOT_ID} from '../../../config'
 
 import styles from './ServerApi.less'
 
@@ -220,7 +220,12 @@ export default class ServerApi extends React.Component{
           })}
         </Col>
         <Col span={4}>
-          <Anchor>
+          <Anchor 
+            className={styles.anchor}
+            showInkInFixed
+            offsetTop={100} 
+            getContainer={() => document.getElementById(ROOT_ID)}
+          >
             {this.renderAnchorLink(defaultRoutes)}
           </Anchor>
         </Col>
