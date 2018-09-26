@@ -109,5 +109,10 @@ export default function request(url, options) {
       // if (status >= 404 && status < 422) {
       //   dispatch(routerRedux.push('/exception/404'));
       // }
+      if(e.message === 'Failed to fetch'){
+        notification.error({
+          message: `${e.message}, 服务器连接错误`,
+        });
+      }
     });
 }
