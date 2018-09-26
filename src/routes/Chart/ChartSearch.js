@@ -27,6 +27,10 @@ export default class ChartSearch extends React.Component{
         searching={searching}
         currentChart={currentChart}
         onSearch={this.handleSearch}
+        pagination={{
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '30', '50'],
+        }}
       />
     )
   }
