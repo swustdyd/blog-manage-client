@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Input, Icon, Button } from 'antd';
+import { Form, Input, Icon, Button, Drawer, Tooltip } from 'antd';
+import SearchWhere from '../../components/ChartView/SearchWhere'
 
 import styles from './ChartEdit.less';
 
@@ -13,16 +14,38 @@ const { TextArea } = Input;
 }))
 @Form.create()
 export default class ChartEdit extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      visible: false,
+    }
+  } 
+
+  onClose = () => {
+    this.setState({
+      visible: false,
+    });
+  };  
+
   handleSubmit = e => {
     e.preventDefault();
   };
 
+  preViewClick = () => {
+    const {visible} = this.state;
+    this.setState({
+      visible: !visible,
+    });
+  }; 
+
   render() {
     const {
       defaultChart = {},
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldValue},
       submiting,
     } = this.props;
+    const {visible} = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 4 },
@@ -73,7 +96,18 @@ export default class ChartEdit extends React.Component {
             initialValue: defaultChart.script,
           })(<TextArea autosize={textAreaAutosize} placeholder="请填入报表Script..." />)}
         </FormItem>
-        <FormItem {...formItemLayout} label="报表Where">
+        <FormItem 
+          {...formItemLayout} 
+          label={(
+            <span>
+              报表Where
+              &nbsp;
+              <Tooltip title="点击预览搜索框">
+                <Icon className={styles.preViewIcon} type="eye-o" onClick={this.preViewClick} />
+              </Tooltip>
+            </span>
+          )}
+        >
           {getFieldDecorator('where', {
             rules: [
               {
@@ -82,7 +116,7 @@ export default class ChartEdit extends React.Component {
               },
             ],
             initialValue: JSON.stringify(defaultChart.where || []),
-          })(<TextArea autosize={textAreaAutosize} placeholder="请填入报表Wheree..." />)}
+          })(<TextArea autosize={textAreaAutosize} placeholder="请填入报表Where..." />)}
         </FormItem>
         <div className={styles.submiContainer}>
           <Button type="primary" htmlType="submit">
@@ -96,6 +130,17 @@ export default class ChartEdit extends React.Component {
             )}
           </Button>
         </div>
+        <Drawer
+          title="Where预览"
+          placement="top"
+          closable={false}
+          onClose={this.onClose}
+          visible={visible}
+          zIndex={1001}
+          width="100%"
+        >
+          <SearchWhere where={JSON.parse(getFieldValue('where') || '[]')} />
+        </Drawer>
       </Form>
     );
   }
