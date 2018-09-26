@@ -1,28 +1,19 @@
 import React from 'react'
 import {
-  Input, 
-  Select, 
-  Checkbox, 
-  Radio, 
   Form, 
   Row, 
   Button, 
   Tabs, 
   Table, 
   message,
-  DatePicker,
   Icon,
 } from 'antd'
 import Echarts from '../Echarts'
+import SearchWhere from './SearchWhere'
 
 import styles from './index.less'
 
-const RadioGroup = Radio.Group;
-const CheckboxGroup = Checkbox.Group
-const {Option} = Select;
-const FormItem = Form.Item;
 const {TabPane} = Tabs;
-const { RangePicker } = DatePicker;
 
 @Form.create()
 export default class ChartView extends React.Component{
@@ -63,68 +54,6 @@ export default class ChartView extends React.Component{
     })
   }
 
-  renderDatePicker = (item) => {
-    const {dateFormat, showTime} = item;
-    return (
-      <DatePicker 
-        showTime={showTime}
-        // defaultValue={moment(Date.now(), dateFormat)} 
-        format={dateFormat}
-      />
-    )
-  }
-
-  renderRangePicker = (item) => {
-    const {dateFormat, showTime} = item;
-    return (
-      <RangePicker 
-        showTime={showTime}
-        // defaultValue={[moment(Date.now(), dateFormat)]} 
-        format={dateFormat}
-      />
-    )
-  }
-
-  renderInput = () => {
-    return <Input />
-  }
-
-  renderSelect = (item) => {
-    return (
-      <Select>
-        {
-          item.datas.map(data => {
-            return <Option key={data.value} value={data.value}>{data.label}</Option>
-          })
-        }
-      </Select>
-    )
-  }
-
-  renderRadio = (item) => {
-    return (
-      <RadioGroup name={item.key}>
-        {
-          item.datas.map(data => {
-            return <Radio key={data.value} value={data.value}>{data.label}</Radio>
-          })
-        }
-      </RadioGroup>
-    )
-  }
-
-  renderCheckbox = (item) => {
-    return (
-      <CheckboxGroup name={item.key}>
-        {
-          item.datas.map(data => {
-            return <Checkbox key={data.value} value={data.value}>{data.label}</Checkbox>
-          })
-        }
-      </CheckboxGroup>
-    )
-  }
-
   renderSearchWhere = (where = []) => {
     const formItemLayout = {
       labelCol: {
@@ -139,16 +68,7 @@ export default class ChartView extends React.Component{
       },
     };
     const {form: {getFieldDecorator}} = this.props;
-    return where.map(item => {
-      const method = `render${item.type.replace(/( |^)[a-z]/g, (L) => L.toUpperCase())}`;
-      return (
-        <FormItem key={item.key} {...formItemLayout} label={item.label}>
-          {getFieldDecorator(item.key)(
-            this[method](item)
-          )}          
-        </FormItem>
-      )
-    })
+    return <SearchWhere getFieldDecorator={getFieldDecorator} formItemLayout={formItemLayout} where={where} />
   }
 
   renderCharts = (chart) => {
@@ -174,7 +94,7 @@ export default class ChartView extends React.Component{
 
   render(){
     const {currentTagKey} = this.state;
-    const {currentChart = {}, searching} = this.props;
+    const {currentChart = {}, searching, pagination} = this.props;
     const {listData} = currentChart;
     const columns = [];
     const hasData = currentChart.listData && currentChart.listData.length > 0
@@ -195,9 +115,7 @@ export default class ChartView extends React.Component{
       <div>
         <h2>{currentChart.name}</h2>
         <Form className="search-form-container" onSubmit={this.handleSubmit}>
-          <Row>
-            {this.renderSearchWhere(currentChart.where)}
-          </Row>
+          {this.renderSearchWhere(currentChart.where)}
           <Row className="search-form-action-container">
             <Button type="primary" htmlType="submit">
               {searching ? (
@@ -215,7 +133,7 @@ export default class ChartView extends React.Component{
                 rowKey={columns[0].dataIndex}
                 dataSource={listData}
                 columns={columns}
-                pagination={false}
+                pagination={pagination}
               />
             ) : '暂无数据'}
           </TabPane>
