@@ -116,6 +116,9 @@ export function getRouterData(app, menus = []) {
     '/other/serverApi': {
       component: dynamicWrapper(app, ['api'], () => import('../routes/Other/ServerApi')),
     },
+    '/other/socket': {
+      component: dynamicWrapper(app, ['api'], () => import('../routes/Other/SocketTest')),
+    },
     '/common': {
       component: dynamicWrapper(app, [], () => import('../layouts/CommonLayout')),
     },
