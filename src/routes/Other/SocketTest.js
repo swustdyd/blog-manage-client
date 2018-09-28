@@ -1,5 +1,5 @@
 import React from 'react'
-import {Timeline, Button, Input, message, Row, Col, Badge} from 'antd'
+import {Button, Input, message, Row, Col, Badge, Icon, Tooltip} from 'antd'
 import moment from 'moment'
 
 import styles from './SocketTest.less'
@@ -7,18 +7,20 @@ import styles from './SocketTest.less'
 const {Search} = Input;
 
 const url = 'ws://10.130.196.85:8081'
+const socketNum = 3;
 const sockets = {};
 
 const createSockets = (num) => {
   for (let i = 0; i < num; i += 1) {
     sockets[i] = {
       id: i,
+      name: `Socket(${i})`,
       instance: undefined,
     }
   }
 }
 
-createSockets(4);
+createSockets(socketNum);
 
 export default class SocketPage extends React.Component{
   render(){
@@ -27,7 +29,7 @@ export default class SocketPage extends React.Component{
       if (Object.hasOwnProperty.call(sockets, key)) {
         const element = sockets[key];        
         items.push(
-          <Col key={element.id} span={12}>
+          <Col key={element.id} span={8}>
             <div className={styles.itemContainer}>
               <SocketItem ws={element} />
             </div>
@@ -51,7 +53,7 @@ class SocketItem extends React.Component{
     this.state = {
       messages: [{
         from: 'System',
-        data: 'Please Click The Button \'Open Socket\' ',
+        data: 'Please Open Socket',
         date: new Date(),
       }],
       socketOpened: false,
@@ -61,11 +63,11 @@ class SocketItem extends React.Component{
   }
 
   handleSendClick = (value) => {
-    if(value){
+    if(value && value.trim()){
       const {ws} = this.state
       if(ws.instance){
         ws.instance.send(JSON.stringify({
-          from: `Socket(${ws.id})`,
+          from: ws.name,
           data: value,
           date: new Date(),
           type: 'broadcast',
@@ -74,7 +76,7 @@ class SocketItem extends React.Component{
           inputValue: '',
         })
       }else{
-        message.error('Please Click The Button \'Open Socket\' ');
+        message.error('Please Open Socket');
       }
     }else{
       message.error('message can\'t be null');
@@ -99,7 +101,7 @@ class SocketItem extends React.Component{
         },
       })
       newWs.onopen = () => {
-        const messages = [];
+        const {messages} = this.state;
         const msg = {
           from: 'System',
           data: 'Connection open ...',
@@ -138,39 +140,62 @@ class SocketItem extends React.Component{
           },
         })
       }; 
-    }
-  }
-
-  handleSocketCloseClick = () => {
-    const {ws} = this.state;
-    if(ws.instance){
+    }else{
       ws.instance.close();
     }
   }
 
-  renderTimeline(){
-    const {messages, ws} = this.state;
-    const curentSokect = `Socket(${ws.id})`
-    let items = [];
+  handleMessageClearClick = () => {
+    this.setState({
+      messages: [],
+    })
+  }
 
-    items = items.concat(messages.map(item => {
-      return(
-        <Timeline.Item key={item.date} color={item.from === curentSokect ? 'green' : 'blue'}>
+  renderMessageHeader = (item, isCurrent) => {
+    let header = null;
+    if(isCurrent){
+      header = (
+        <div className={styles.messageHeaderCurrent}>
+          <strong>&nbsp;{item.from}</strong>
+          -
           <i>
             ({moment(item.date).format('HH:mm:ss')})
           </i>
-          -&nbsp;
-          <strong>{item.from}:&nbsp;</strong>
-          {item.data}
-        </Timeline.Item>
+          <span className={styles.headerIconRight} />
+        </div>
+      );
+    }else{
+      header = (
+        <div className={styles.messageHeader}>
+          <span className={styles.headerIconLeft} />
+          <i>
+            ({moment(item.date).format('HH:mm:ss')})
+          </i>
+          -
+          <strong>{item.from}</strong>
+        </div>
+      );
+    }
+    return header;
+  }
+
+  renderMessage(){
+    const {messages, ws} = this.state;
+    let items = [];
+
+    items = items.concat(messages.map(item => {
+      const isCurrent = ws.name === item.from;
+      return(
+        <div className={styles.messageItemContainer} key={item.date}>
+          {this.renderMessageHeader(item, isCurrent)}
+          <div className={isCurrent ? styles.messageDataCurrent: styles.messageData}>
+            {item.data}
+          </div>
+        </div>
       )
     }))
 
-    return(
-      <Timeline>
-        {items}
-      </Timeline>
-    )
+    return items;
   }
 
   render(){
@@ -178,35 +203,39 @@ class SocketItem extends React.Component{
     return(
       <div>
         <Badge status={socketOpened ? 'success' : 'error'} text={`Socket(${ws.id})`} />
-        <div>
-          <Row style={{marginTop: 25}}>
-            <Button 
-              type="primary"
-              onClick={this.handleSocketOpenClick}
-            >
-              Open Socket
-            </Button>
-            &emsp;
-            <Button 
-              type="danger"
-              onClick={this.handleSocketCloseClick}
-            >
-              Close Socket
-            </Button>
-          </Row>
-          <Row style={{marginTop: 25}}>
-            <Search
-              value={inputValue}
-              placeholder="input message..."
-              enterButton="Send"
-              onSearch={this.handleSendClick}
-              onChange={this.handleInputChange}
-            />
-          </Row>
-          <Row style={{marginTop: 25}}>
-            {this.renderTimeline()}
-          </Row>
+        &emsp;
+        <Tooltip title={socketOpened ? 'Close Socket' : 'Open Socket'}>
+          <Button 
+            type={socketOpened ? 'danger' : 'primary'}
+            onClick={this.handleSocketOpenClick}
+            size="small"
+          >
+            <Icon type="poweroff" theme="outlined" />
+          </Button>
+        </Tooltip>
+        &emsp;
+        <Tooltip title="Clear Messages">
+          <Button 
+            type="danger"
+            onClick={this.handleMessageClearClick}
+            size="small"
+          >
+            <Icon type="delete" theme="outlined" />
+          </Button>
+        </Tooltip>
+        <div className={styles.messageListContainer}>
+          {this.renderMessage()}
         </div>
+        <Row>
+          <Search
+            disabled={!socketOpened}
+            value={inputValue}
+            placeholder="input message..."
+            enterButton="Send"
+            onSearch={this.handleSendClick}
+            onChange={this.handleInputChange}
+          />
+        </Row>
       </div>
     )
   }
