@@ -1,33 +1,34 @@
-import React from 'react'
-import {Button, Input, message, Row, Col, Badge, Icon, Tooltip} from 'antd'
-import moment from 'moment'
+import React from 'react';
+import { Button, Input, message, Row, Col, Badge, Icon, Tooltip } from 'antd';
+import moment from 'moment';
+import { SOCKETHOST, SOCKETPORT } from '../../../config';
 
-import styles from './SocketTest.less'
+import styles from './SocketTest.less';
 
-const {Search} = Input;
+const { Search } = Input;
 
-const url = 'ws://10.130.196.85:8081'
+const url = `${SOCKETHOST}:${SOCKETPORT}`;
 const socketNum = 3;
 const sockets = {};
 
-const createSockets = (num) => {
+const createSockets = num => {
   for (let i = 0; i < num; i += 1) {
     sockets[i] = {
       id: i,
       name: `Socket(${i})`,
       instance: undefined,
-    }
+    };
   }
-}
+};
 
 createSockets(socketNum);
 
-export default class SocketPage extends React.Component{
-  render(){
+export default class SocketPage extends React.Component {
+  render() {
     const items = [];
     for (const key in sockets) {
       if (Object.hasOwnProperty.call(sockets, key)) {
-        const element = sockets[key];        
+        const element = sockets[key];
         items.push(
           <Col key={element.id} span={8}>
             <div className={styles.itemContainer}>
@@ -37,71 +38,70 @@ export default class SocketPage extends React.Component{
         );
       }
     }
-    return(
-      <div>
-        {items}
-      </div>
-    )
+    return <div>{items}</div>;
   }
 }
 
 // eslint-disable-next-line
-class SocketItem extends React.Component{
-
-  constructor(props){
+class SocketItem extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
-      messages: [{
-        from: 'System',
-        data: 'Please Open Socket',
-        date: new Date(),
-      }],
+      messages: [
+        {
+          from: 'System',
+          data: 'Please Open Socket',
+          date: new Date(),
+        },
+      ],
       socketOpened: false,
       ws: props.ws || {},
       inputValue: '',
-    }
+    };
   }
 
-  handleSendClick = (value) => {
-    if(value && value.trim()){
-      const {ws} = this.state
-      if(ws.instance){
-        ws.instance.send(JSON.stringify({
-          from: ws.name,
-          data: value,
-          date: new Date(),
-          type: 'broadcast',
-        }))
+  handleSendClick = value => {
+    if (value && value.trim()) {
+      const { ws } = this.state;
+      if (ws.instance) {
+        ws.instance.send(
+          JSON.stringify({
+            from: ws.name,
+            data: value,
+            date: new Date(),
+            type: 'broadcast',
+          })
+        );
         this.setState({
           inputValue: '',
-        })
-      }else{
+        });
+      } else {
         message.error('Please Open Socket');
       }
-    }else{
-      message.error('message can\'t be null');
+    } else {
+      message.error("message can't be null");
     }
-  }
+  };
 
-  handleInputChange = (e) => {
-    const {value} = e.target;
+  handleInputChange = e => {
+    const { value } = e.target;
     this.setState({
       inputValue: value,
-    })
-  }
+    });
+  };
 
   handleSocketOpenClick = () => {
-    const {ws} = this.state;
-    if(!ws.instance){
-      const newWs = new WebSocket(url, 'echo-protocol')
+    const { ws } = this.state;
+    if (!ws.instance) {
+      const newWs = new WebSocket(url, 'echo-protocol');
       this.setState({
         ws: {
           ...ws,
           instance: newWs,
         },
-      })
+      });
       newWs.onopen = () => {
-        const {messages} = this.state;
+        const { messages } = this.state;
         const msg = {
           from: 'System',
           data: 'Connection open ...',
@@ -111,20 +111,20 @@ class SocketItem extends React.Component{
         this.setState({
           messages,
           socketOpened: true,
-        })
+        });
       };
-      
-      newWs.onmessage = (evt) => {
-        const {messages} = this.state;
+
+      newWs.onmessage = evt => {
+        const { messages } = this.state;
         const msg = evt.data;
         messages.push(JSON.parse(msg));
         this.setState({
           messages,
-        }) 
+        });
       };
-      
+
       newWs.onclose = () => {
-        const {messages, ws: originWs} = this.state;
+        const { messages, ws: originWs } = this.state;
         const msg = {
           from: 'System',
           data: 'Connection closed.',
@@ -138,74 +138,72 @@ class SocketItem extends React.Component{
             ...originWs,
             instance: undefined,
           },
-        })
-      }; 
-    }else{
+        });
+      };
+    } else {
       ws.instance.close();
     }
-  }
+  };
 
   handleMessageClearClick = () => {
     this.setState({
       messages: [],
-    })
-  }
+    });
+  };
 
   renderMessageHeader = (item, isCurrent) => {
     let header = null;
-    if(isCurrent){
+    if (isCurrent) {
       header = (
         <div className={styles.messageHeaderCurrent}>
-          <strong>&nbsp;{item.from}</strong>
-          -
-          <i>
-            ({moment(item.date).format('HH:mm:ss')})
-          </i>
+          <strong>
+            &nbsp;
+            {item.from}
+          </strong>
+          -<i>({moment(item.date).format('HH:mm:ss')})</i>
           <span className={styles.headerIconRight} />
         </div>
       );
-    }else{
+    } else {
       header = (
         <div className={styles.messageHeader}>
           <span className={styles.headerIconLeft} />
-          <i>
-            ({moment(item.date).format('HH:mm:ss')})
-          </i>
-          -
-          <strong>{item.from}</strong>
+          <i>({moment(item.date).format('HH:mm:ss')})</i>-<strong>{item.from}</strong>
         </div>
       );
     }
     return header;
-  }
+  };
 
-  renderMessage(){
-    const {messages, ws} = this.state;
+  renderMessage() {
+    const { messages, ws } = this.state;
     let items = [];
 
-    items = items.concat(messages.map(item => {
-      const isCurrent = ws.name === item.from;
-      return(
-        <div className={styles.messageItemContainer} key={item.date}>
-          {this.renderMessageHeader(item, isCurrent)}
-          <div className={isCurrent ? styles.messageDataCurrent: styles.messageData}>
-            {item.data}
+    items = items.concat(
+      messages.map(item => {
+        const isCurrent = ws.name === item.from;
+        return (
+          <div className={styles.messageItemContainer} key={item.date}>
+            {this.renderMessageHeader(item, isCurrent)}
+            <div className={isCurrent ? styles.messageDataCurrent : styles.messageData}>
+              {item.data}
+            </div>
           </div>
-        </div>
-      )
-    }))
+        );
+      })
+    );
 
     return items;
   }
 
-  render(){
-    const {ws, inputValue, socketOpened} = this.state;
-    return(
+  render() {
+    const { ws, inputValue, socketOpened } = this.state;
+    return (
       <div>
         <Badge status={socketOpened ? 'success' : 'error'} text={`Socket(${ws.id})`} />
         &emsp;
         <Tooltip title={socketOpened ? 'Close Socket' : 'Open Socket'}>
-          <Button 
+          <Button
             type={socketOpened ? 'danger' : 'primary'}
             onClick={this.handleSocketOpenClick}
             size="small"
@@ -215,17 +213,11 @@ class SocketItem extends React.Component{
         </Tooltip>
         &emsp;
         <Tooltip title="Clear Messages">
-          <Button 
-            type="danger"
-            onClick={this.handleMessageClearClick}
-            size="small"
-          >
+          <Button type="danger" onClick={this.handleMessageClearClick} size="small">
             <Icon type="delete" theme="outlined" />
           </Button>
         </Tooltip>
-        <div className={styles.messageListContainer}>
-          {this.renderMessage()}
-        </div>
+        <div className={styles.messageListContainer}>{this.renderMessage()}</div>
         <Row>
           <Search
             disabled={!socketOpened}
@@ -237,6 +229,6 @@ class SocketItem extends React.Component{
           />
         </Row>
       </div>
-    )
+    );
   }
 }

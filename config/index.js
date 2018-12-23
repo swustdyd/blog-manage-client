@@ -1,5 +1,11 @@
-export const HOST = 'http://10.130.196.85';
-export const PORT = 3001;
-export const CLIENTHOST = 'http://10.130.196.85';
-export const CLIENTPORT = 8000;
+import baseConfig from '../../config';
+
+const { serverHost, serverPort, clientHost, clientPort, socketHost, socketPort } = baseConfig;
+
+export const HOST = serverHost;
+export const PORT = serverPort;
+export const CLIENTHOST = clientHost;
+export const CLIENTPORT = clientPort;
+export const SOCKETHOST = socketHost;
+export const SOCKETPORT = socketPort;
 export const ROOT_ID = 'root';
