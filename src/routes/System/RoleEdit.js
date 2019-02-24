@@ -245,7 +245,7 @@ export default class RoleEdit extends React.Component {
 
   render() {
     const {
-      defaultRole = {},
+      defaultRole,
       submiting,
       form: { getFieldDecorator },
     } = this.props;

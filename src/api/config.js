@@ -41,7 +41,7 @@ for (const key in Urls) {
     if (url.unRebuild) {
       Urls[key] = Urls[key].path;
     } else {
-      Urls[key] = `/${url}`;
+      Urls[key] = `${HOST}:${PORT}/${url}`;
     }
   }
 }
