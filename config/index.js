@@ -6,7 +6,7 @@ let config = baseConfig;
 // eslint-disable-next-line
 console.log(`NODE_ENV is '${process.env.NODE_ENV}'`)
 
-if (process.env.NODE_ENV === 'staging') {
+if (process.env.NODE_ENV === 'production') {
   config = stagingConfig;
 }
 
