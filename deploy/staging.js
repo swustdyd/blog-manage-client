@@ -2,7 +2,7 @@ const shelljs = require('shelljs');
 const path = require('path');
 const fs = require('fs');
 
-shelljs.exec('cross-env ESLINT=none roadhog build', (code) => {
+shelljs.exec('cross-env ESLINT=none NODE_ENV=staging roadhog build', (code) => {
   if (code !== 0) {
     throw new Error('build failed');
   }

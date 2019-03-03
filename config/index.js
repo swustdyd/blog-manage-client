@@ -1,6 +1,13 @@
 import baseConfig from '../../config';
+import stagingConfig from '../../config/index-staging';
 
-const { serverHost, serverPort, clientHost, clientPort, socketHost, socketPort } = baseConfig;
+let config = baseConfig;
+
+if (process.env.NODE_ENV === 'staging') {
+  config = stagingConfig;
+}
+
+const { serverHost, serverPort, clientHost, clientPort, socketHost, socketPort } = config;
 
 export const HOST = serverHost;
 export const PORT = serverPort;
