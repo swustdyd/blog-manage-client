@@ -26,6 +26,8 @@ import styles from './BasicLayout.less'
 const { Content, Header, Footer } = Layout;
 const { check } = Authorized;
 
+const DefaultTitle = 'DEMO';
+
 /**
  * 根据菜单取得重定向地址.
  */
@@ -178,7 +180,7 @@ export default class BasicLayout extends React.PureComponent {
     const { location } = this.props;
     const { routerData } = this.state;
     const { pathname } = location;
-    let title = 'Blog Manage';
+    let title = DefaultTitle;
     let currRouterData = null;
     // match params path
     Object.keys(routerData).forEach(key => {
@@ -272,7 +274,7 @@ export default class BasicLayout extends React.PureComponent {
       <Layout>
         <SiderMenu
           logo={logo}
-          title="报表系统"
+          title={DefaultTitle}
           menuData={menuData}
           collapsed={collapsed}
           location={location}
@@ -312,7 +314,7 @@ export default class BasicLayout extends React.PureComponent {
             <GlobalFooter
               copyright={
                 <Fragment>
-                  Blog Manage Copyright <Icon type="copyright" /> DYD{' '}
+                  {DefaultTitle} Copyright <Icon type="copyright" /> DYD{' '}
                   <a href="https://github.com/swustdyd/blog-manage-client">
                     <Icon type="github" />
                   </a>

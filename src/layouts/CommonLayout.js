@@ -11,9 +11,9 @@ class CommonLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = 'Blog Manage';
+    let title = 'DEMO';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Blog Manage`;
+      title = `${routerData[pathname].name} - DEMO`;
     }
     return title;
   }
