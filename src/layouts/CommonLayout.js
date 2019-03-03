@@ -48,7 +48,7 @@ class CommonLayout extends React.PureComponent {
                 <GlobalFooter
                     copyright={
                         <Fragment>
-                          Blog Manage Copyright <Icon type="copyright" /> DYD <a href="https://github.com/swustdyd/blog-manage-client"><Icon type="github" /></a>
+                          Demo for Ant Design Pro <Icon type="copyright" /> DYD <a href="https://github.com/swustdyd/blog-manage-client"><Icon type="github" /></a>
                         </Fragment>
                     }
                 />
