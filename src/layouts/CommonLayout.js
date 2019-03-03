@@ -28,10 +28,10 @@ class CommonLayout extends React.PureComponent {
                         <div className={styles.header}>
                             <Link to="/">
                                 <img alt="logo" className={styles.logo} src={logo} />
-                                <span className={styles.title}>Blog Manage</span>
+                                <span className={styles.title}>DEMO</span>
                             </Link>
                         </div>
-                        <div className={styles.desc}>Blog Manage 博客后台管理系统</div>
+                        <div className={styles.desc}>Demo for Ant Design Pro</div>
                     </div>
                     <Switch>
                         {getRoutes(match.path, routerData).map(item => (
