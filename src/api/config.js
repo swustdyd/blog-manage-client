@@ -12,28 +12,16 @@ export const Urls = {
   SAVE_OR_UPDATE_TAG: 'saveOrUpdateTag',
   SEARCH_ROLES: 'searchRoles',
   SAVE_OR_UPDATE_ROLE: 'saveOrUpdateRole',
-  SEARCH_CHARTS: {
-    path: '/api/searchCharts',
-    unRebuild: true,
-  },
-  GET_CHART_DATAS: {
-    path: '/api/getChartDatas',
-    unRebuild: true,
-  },
-  SAVE_OR_UPDATE_CHART: {
-    path: '/api/saveOrUpdateChart',
-    unRebuild: true,
-  },
+  SEARCH_CHARTS: 'searchCharts',
+  GET_CHART_DATAS: 'getChartDatas',
+  SAVE_OR_UPDATE_CHART: 'saveOrUpdateChart',
   SEARCH_MENUS: 'searchMenus',
   GET_ALL_MENUS: 'getAllMenus',
   SAVE_OR_UPDATE_MENU: 'saveOrUpdateMenu',
   GET_ALL_ROUTES: 'getAllApis',
   SEARCH_ROUTES: 'searchRoutes',
-  QUERY_NOTICES: {
-    path: '/api/queryNotices',
-    unRebuild: true,
-  },
-};
+  QUERY_NOTICES: 'queryNotices',
+}
 
 for (const key in Urls) {
   if (Object.hasOwnProperty.call(Urls, key)) {
